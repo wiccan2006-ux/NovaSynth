@@ -2,17 +2,9 @@
   "version": "0.17.0-beta",
   "original_source_archive_sha256": "0163636d1ac52b8518ec4cffa0055c0377927f3b1db6c430fef68f026fd40f25",
   "release_artifacts": {
-    "Nova Synth.vst3/Contents/x86_64-win/.Nova Synth.vst3.cWkiT8": {
-      "bytes": 3407872,
-      "sha256": "6cd51d18cfcd2407bdc41c63dc59238c20e833bfe644b262edb6f1e9229912ac"
-    },
     "Nova Synth.vst3/Contents/x86_64-win/Nova Synth.vst3": {
       "bytes": 11641856,
       "sha256": "2fd0fead64323e35f26462a0a757262603c6b8396d1b7f0f0fdda2a366b32123"
-    },
-    "Nova Synth.vst3/Contents/x86_64-win/Nova Synth.vst3.tmp343bffe": {
-      "bytes": 10896896,
-      "sha256": "a0dd2c46c7a516ae48a016c547dc3a80ac68ad56526059b6b8e8de7d02346c9f"
     },
     "NovaSynth_0.17_Codigo_Fuente_Completo.zip": {
       "bytes": 23456583,
@@ -25,5 +17,10 @@
   },
   "source_origin": "RCDATA104 from the published 0.17 installer",
   "git_history_origin": "One initial source snapshot, no retroactive commits",
-  "remote_created": false
+  "remote_created": true,
+  "repository": "https://github.com/wiccan2006-ux/NovaSynth",
+  "visibility": "private",
+  "snapshot_commit": "b2b621030c19440b34276454164b1b28a7677d4a",
+  "snapshot_tag": "v0.17-snapshot",
+  "import_commit": "4bd9c0e927153f2f854fb428caaf89f9e4eb75bc"
 }
