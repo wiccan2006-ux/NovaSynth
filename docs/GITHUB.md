@@ -1,57 +1,55 @@
-# Publicar la carpeta maestra en GitHub
+# Acceder al proyecto en GitHub
 
-La entrega ya es un repositorio Git local, rama main, con un commit y el tag
-v0.17-snapshot. **Todavia no hay repositorio remoto ni URL real de GitHub.**
-Nombre propuesto: NovaSynth. Visibilidad inicial propuesta: privado.
+Repositorio privado: https://github.com/wiccan2006-ux/NovaSynth
+Cuenta propietaria: wiccan2006-ux. Rama principal: main.
 
-## Opcion sencilla: GitHub Desktop
+## Descargar o continuar
 
-1. Descomprime el paquete completo en tu PC.
-2. Instala GitHub Desktop desde https://desktop.github.com/ e inicia sesion.
-3. File > Add local repository: elige la subcarpeta **NovaSynth**, donde estan
-   README.md y la carpeta .git. No elijas solo Distribuciones ni el ZIP.
-4. Pulsa Publish repository. Nombre: NovaSynth.
-5. Conserva Keep this code private y publica en tu cuenta personal.
-6. Guarda la URL que GitHub te entregue; esa sera la ubicacion permanente del codigo.
-7. Desde GitHub comparte acceso al repositorio con tu programador cuando lo decidas.
-8. Crea una Release basada en el tag v0.17-snapshot y adjunta los binarios/fuentes
-   publicados de Distribuciones/0.17. El codigo ya estara en el repositorio.
+- Para programar con historial: inicia sesion en GitHub Desktop, File > Clone repository,
+  selecciona wiccan2006-ux/NovaSynth y elige una carpeta en tu PC.
+- Para otra IA con acceso a GitHub: conecta esta cuenta y selecciona NovaSynth.
+- Para descargar las carpetas actuales: Code > Download ZIP. Este ZIP no incluye .git;
+  usa un clon para conservar el historial.
+- Para instalador y respaldo completo: Releases > v0.17-snapshot.
+- Para entregar a un programador: dale acceso desde Settings > Collaborators cuando
+  tu lo decidas. Un repositorio privado no se abre solo por compartir su enlace.
 
-Referencia oficial:
-https://docs.github.com/en/desktop/adding-and-cloning-repositories/adding-an-existing-project-to-github-using-github-desktop
-
-## Alternativa para un programador
-
-Crea un repositorio remoto vacio en tu cuenta, sin README ni licencia nuevos.
-Los comandos siguientes usan TU_USUARIO como marcador; no son una URL ya creada:
+## Clonar desde terminal
 
 ```sh
-git remote add origin https://github.com/TU_USUARIO/NovaSynth.git
-git push -u origin main
-git push origin v0.17-snapshot
+git clone https://github.com/wiccan2006-ux/NovaSynth.git
+cd NovaSynth
+git switch -c feature/nombre-del-cambio
 ```
 
-## Recuperar el historial desde el bundle
+GitHub pedira autenticacion para este repositorio privado. No guardes claves ni tokens
+en los archivos del proyecto. Lee README.md, AGENTS.md y docs/CONTINUAR.md.
 
-Si se pierde .git o una herramienta omite carpetas ocultas, desde la carpeta
-que contiene NovaSynth.bundle ejecuta:
+## Historial conservado
+
+El commit b2b621030c19440b34276454164b1b28a7677d4a importa las fuentes originales
+0.17 y documentos de continuidad. La etiqueta anotada v0.17-snapshot conserva ese
+punto. La fusion de importacion en main conserva ese commit como antecesor y tambien
+los commits de preparacion remota. No se invento historial de versiones anteriores.
+
+NovaSynth.bundle es el respaldo independiente de esa instantanea. Para restaurarlo:
 
 ```sh
 git clone NovaSynth.bundle NovaSynth_recuperado
 ```
 
-Ese clon incluye todos los archivos versionados, incluida ThirdParty/JUCE.
-El bundle no contiene los instaladores, que van aparte en Distribuciones.
+Ese clon tiene el historial inicial, no los commits posteriores de GitHub.
+El paquete completo tambien contiene Distribuciones/0.17; los compiladores y SDK
+se instalan aparte.
 
-## Reglas para siguientes versiones
+## Siguientes versiones
 
-- main conserva el estado estable; cada cambio se trabaja en una rama corta.
-- Guarda commits con descripcion concreta del cambio y su validacion.
-- Etiqueta releases y adjunta instalador y fuentes de esa compilacion.
-- No sobrescribas una distribucion vieja con binarios diferentes usando el mismo nombre.
-- Conserva dos copias: GitHub y una copia local del repositorio/artefactos.
-- Configura tu nombre/correo Git para commits futuros. La identidad inicial del
-  respaldo es una identidad tecnica local y no autentica ninguna cuenta GitHub.
+1. Clona o actualiza main y crea una rama para el cambio.
+2. Guarda commits con descripcion y ejecuta las pruebas apropiadas.
+3. Revisa el Pull Request y sus resultados de Actions antes de integrar.
+4. Conserva los IDs de parametros/presets y actualiza todos los textos de version.
+5. Crea una nueva etiqueta y Release con instalador y fuentes de esa compilacion.
+6. Conserva otra copia local; no sustituyas distribuciones antiguas por otros binarios.
 
-La automatizacion de pruebas en .github/workflows queda preparada. Solo sabremos
-si pasa en GitHub cuando el repositorio se publique y Actions la ejecute.
+GitHub Actions comprueba tres pruebas de nucleo en Ubuntu; no valida por si solo
+el instalador ni el VST3 dentro de Windows/FL Studio.
