@@ -1,0 +1,77 @@
+#pragma once
+#include "Processor.h"
+#include "GlassStyle.h"
+class AssistantView final:public juce::Component,private juce::ListBoxModel,private juce::Timer {
+    NovaProcessor& p;juce::Colour accent;
+    juce::TextButton scan{"1. Revisar audio"},learn{"2. Aprender elegidas"},refine{"3. Refinar instrumento"},original{"Escuchar A"},recreated{"Recreado B"},stop{"Detener"},cancel{"Cancelar"},close{"Muestra"},best{"Recomendadas"},none{"Ninguna"},undo{"Deshacer ajuste"};
+    juce::ToggleButton include{"Usar esta nota"};juce::ComboBox goal;juce::ListBox rows{"Notas detectadas",this};juce::TextEditor detail;juce::Label feedback;
+    std::shared_ptr<const nova::ReferenceReview> review;std::vector<int> chosen;int focused=0;
+    juce::Rectangle<float> waveform()const{return {18,94,getWidth()-36.f,65};}
+    bool included(int row)const{return std::find(chosen.begin(),chosen.end(),row)!=chosen.end();}
+    void focus(){if(auto* e=findParentComponentOfClass<juce::AudioProcessorEditor>())e->grabKeyboardFocus();}
+    static juce::String state(const nova::ReviewRow& row){if(row.clipped>.001)return "Picos recortados";if(row.note.centsSpread>75)return "Tono inestable";if(row.note.confidence<.87f)return "Tono incierto";return "Region tonal estable";}
+    juce::String detailText()const{
+        if(!review)return "Marca una seleccion en MUESTRA y pulsa Revisar audio.\n\nEscucha las notas y elige hasta ocho del mismo instrumento.\n\nNo separa automaticamente instrumentos, ruido ni efectos.";
+        juce::String result;auto refined=p.refinementView();if(refined){const char* goals[]={"Equilibrar parecido","Priorizar ataque","Conservar cuerpo","Menos metalico"};const auto& a=refined->before;const auto& b=refined->after;result="ULTIMO REFINAMIENTO / "+juce::String(goals[static_cast<int>(refined->goal)])+"\nAntes > despues / distancias, no porcentajes\nAtaque: "+juce::String(a.attack,4)+" > "+juce::String(b.attack,4)+"\nCuerpo: "+juce::String(a.body,4)+" > "+juce::String(b.body,4)+"\nCola: "+juce::String(a.tail,4)+" > "+juce::String(b.tail,4)+"\nGlobal: "+juce::String(a.overall,4)+" > "+juce::String(b.overall,4)+"\n\n";}
+        juce::String text=result+juce::String(review->summary)+"\n\nCobertura tonal: "+juce::String(review->analysis.usableFraction*100,1)+" % del fragmento; no es parecido.\nPicos recortados: "+juce::String(review->clipped*100,2)+" % de muestras.";
+        if(focused>=0&&focused<static_cast<int>(review->rows.size())){const auto& row=review->rows[focused];text+="\n\n"+state(row)+" | MIDI "+juce::String(row.note.note)+"\nConfianza tonal: "+juce::String(row.note.confidence,3)+"\nVariacion P90-P10: "+juce::String(row.note.centsSpread,1)+" cents\nDesviacion mediana: "+juce::String(row.note.detuning,1)+" cents\nIntensidad relativa: "+juce::String(static_cast<int>(row.note.velocity*127));}
+        return text+"\n\n"+p.analysisReport();
+    }
+    int getNumRows()override{return review?static_cast<int>(review->rows.size()):0;}
+    void paintListBoxItem(int index,juce::Graphics& g,int width,int height,bool selected)override{
+        if(!review||index>=getNumRows())return;const auto& row=review->rows[index];
+        g.setColour(selected?accent.withAlpha(.17f):juce::Colours::white.withAlpha(index%2?.025f:.005f));g.fillRoundedRectangle(1.f,1.f,width-2.f,height-2.f,7);
+        g.setColour(included(index)?accent:juce::Colour(0xff687583));g.drawRoundedRectangle(9.f,10.f,14.f,14.f,3,1);if(included(index)){juce::Path tick;tick.startNewSubPath(12,17);tick.lineTo(15,20);tick.lineTo(21,12);g.strokePath(tick,juce::PathStrokeType(2));}
+        g.setFont(13.f*p.textScale());g.setColour(juce::Colour(0xffe5ebf4));g.drawText("MIDI "+juce::String(row.note.note),34,0,78,height,juce::Justification::centredLeft);auto offset=p.selectedRange().start;
+        g.drawText(juce::String(offset+row.note.range.start,2)+" - "+juce::String(offset+row.note.range.end,2)+" s",114,0,155,height,juce::Justification::centredLeft);
+        g.drawText(juce::String(row.note.centsSpread,1)+" c",274,0,60,height,juce::Justification::centredLeft);g.setColour(row.stable()?juce::Colour(0xffb8c9db):juce::Colour(0xffffbd80));g.drawText(state(row),340,0,width-350,height,juce::Justification::centredLeft);
+    }
+    void selectedRowsChanged(int row)override{if(row>=0)focused=row;updateDetails();repaint();}
+    void listBoxItemClicked(int row,const juce::MouseEvent& e)override{if(e.position.x<30)p.chooseReviewRow(row,!included(row));}
+    void listBoxItemDoubleClicked(int row,const juce::MouseEvent&)override{focused=row;auditionSelected(0);}
+    void updateDetails(){include.setToggleState(included(focused),juce::dontSendNotification);auto text=detailText();if(text!=detail.getText())detail.setText(text,false);}
+public:
+    std::function<void()> onClose;
+    AssistantView(NovaProcessor& processor,juce::Colour colour):p(processor),accent(colour){
+        for(auto* c:std::initializer_list<juce::Component*>{&scan,&learn,&refine,&original,&recreated,&stop,&cancel,&close,&best,&none,&undo,&include,&goal,&rows,&detail,&feedback}){addAndMakeVisible(c);c->setWantsKeyboardFocus(false);}
+        rows.setRowHeight(34);rows.setMultipleSelectionEnabled(false);rows.setColour(juce::ListBox::backgroundColourId,juce::Colour(0xff0b1320));rows.setColour(juce::ListBox::outlineColourId,juce::Colour(0x32ffffff));rows.setOutlineThickness(1);
+        detail.setMultiLine(true,true);detail.setReadOnly(true);detail.setScrollbarsShown(true);detail.setFont(13.5f);detail.setColour(juce::TextEditor::backgroundColourId,juce::Colour(0xff0c1420));detail.setColour(juce::TextEditor::textColourId,juce::Colour(0xffdbe5f0));
+        goal.addItemList({"Equilibrar parecido","Priorizar ataque","Conservar cuerpo","Menos metalico"},1);goal.setSelectedId(1,juce::dontSendNotification);
+        scan.onClick=[this]{focus();p.startReview();};learn.onClick=[this]{focus();p.learnReviewed();};refine.onClick=[this]{focus();p.startRefinement(static_cast<nova::RefineGoal>(goal.getSelectedItemIndex()),focused);};
+        original.onClick=[this]{auditionSelected(0);};recreated.onClick=[this]{auditionSelected(1);};stop.onClick=[this]{p.stopReference();focus();};cancel.onClick=[this]{p.cancelFit();};close.onClick=[this]{p.stopReference();if(onClose)onClose();};
+        best.onClick=[this]{p.chooseRecommendedReview(true);};none.onClick=[this]{p.chooseRecommendedReview(false);};include.onClick=[this]{p.chooseReviewRow(focused,include.getToggleState());};undo.onClick=[this]{p.undoFit();};
+        scan.setTooltip("Analiza la seleccion actual sin cambiar el instrumento. Hasta 60 segundos en modo Contexto.");include.setTooltip("Elige hasta ocho notas. Las advertencias no bloquean tu eleccion, pero la nota se vuelve a verificar antes de aprender.");
+        refine.setTooltip("Busca ajustes cerca del instrumento actual. Conserva el motor y la asignacion tonal. En un banco revisado compara todas las notas elegidas; en un patch simple usa la nota elegida de la lista o la primera incluida.");
+        goal.setTooltip("Objetivos de comparacion interna, no instrucciones para una nueva red neuronal. Conservar cuerpo limita el empeoramiento de la distancia espectral. Menos metalico penaliza energia inarmonica estimada y puede cambiar el caracter original.");
+        feedback.setFont(12.f);feedback.setColour(juce::Label::textColourId,juce::Colour(0xffbecbdd));startTimerHz(20);updateDetails();
+    }
+    void auditionSelected(int mode){focus();if(review&&focused>=0&&focused<getNumRows())p.toggleReference(mode,false,-1,focused);}
+    void setAccent(juce::Colour c){accent=c;rows.repaint();repaint();}
+    void resized()override{
+        best.setBounds(660,12,150,28);none.setBounds(820,12,122,28);close.setBounds(956,12,96,28);
+        scan.setBounds(18,52,150,30);original.setBounds(178,52,112,30);recreated.setBounds(300,52,120,30);stop.setBounds(430,52,90,30);include.setBounds(530,52,170,30);learn.setBounds(710,52,190,30);cancel.setBounds(912,52,140,30);
+        rows.setBounds(18,191,624,203);detail.setBounds(660,191,392,133);
+        goal.setBounds(18,414,260,30);refine.setBounds(290,414,250,30);undo.setBounds(554,414,190,30);feedback.setBounds(18,451,1034,22);
+    }
+    void paint(juce::Graphics& g)override{
+        g.setColour(juce::Colour(0xff080e18));g.fillRoundedRectangle(getLocalBounds().toFloat(),22);nova::glass::panel(g,getLocalBounds().toFloat(),accent,22,this);
+        g.setColour(juce::Colours::white);g.setFont(19.f);g.drawText("APRENDER / REFERENCIAS",18,10,610,32,juce::Justification::centredLeft);
+        auto area=waveform();g.setColour(juce::Colour(0xff0b1422));g.fillRoundedRectangle(area,10);
+        if(review){
+            double duration=std::max(.001,review->analysis.duration);for(int i=0;i<getNumRows();++i){const auto& n=review->rows[i].note;float x=area.getX()+n.range.start/duration*area.getWidth(),w=n.range.length()/duration*area.getWidth();g.setColour(included(i)?accent.withAlpha(.13f):juce::Colours::white.withAlpha(.025f));g.fillRect(x,area.getY(),std::max(1.f,w),area.getHeight());if(i==focused){g.setColour(accent);g.drawRect(x,area.getY()+1,std::max(1.f,w),area.getHeight()-2,1.5f);}}
+            float maximum=.01f;for(float value:review->waveform)maximum=std::max(maximum,value);g.setColour(juce::Colour(0xffb9c8d8).withAlpha(.65f));for(int i=0;i<256;++i){float x=area.getX()+i*area.getWidth()/255,h=review->waveform[i]/maximum*area.getHeight()*.35f;g.drawVerticalLine(static_cast<int>(x),area.getCentreY()-h,area.getCentreY()+h);}
+            auto selection=p.selectedRange();double pos=p.referencePosition();if(pos>=selection.start&&pos<=selection.end){g.setColour(juce::Colours::white);g.drawVerticalLine(static_cast<int>(area.getX()+(pos-selection.start)/duration*area.getWidth()),area.getY(),area.getBottom());}
+            g.setFont(11.f);g.setColour(juce::Colours::white);g.drawText(juce::String(selection.start,2)+" s",area.reduced(5).removeFromBottom(13),juce::Justification::centredLeft);g.drawText(juce::String(selection.end,2)+" s",area.reduced(5).removeFromBottom(13),juce::Justification::centredRight);
+        }else{g.setFont(14.f);g.setColour(juce::Colour(0xffa9b8cc));g.drawText("1. Revisar  >  escucha y elige notas  >  2. Aprender  >  compara A/B  >  3. Refinar",area,juce::Justification::centred);}
+        g.setFont(13.f*p.textScale());g.setColour(juce::Colour(0xffbdcadb));g.drawText("NOTA / TIEMPO / VARIACION / ESTADO",18,164,475,22,juce::Justification::centredLeft);g.setColour(accent);g.drawText(juce::String(static_cast<int>(chosen.size()))+" / 8 elegidas",490,164,152,22,juce::Justification::centredRight);g.drawText(p.refinementView()?"REFINADO / DISTANCIAS PROMEDIO":p.reviewWasLearned()?"BANCO APRENDIDO":"REVISION Y ENVOLVENTE",660,164,392,22,juce::Justification::centredLeft);
+        if(auto refined=p.refinementView()){
+            const double a[]={refined->before.attack,refined->before.body,refined->before.tail},b[]={refined->after.attack,refined->after.body,refined->after.tail};const char* names[]={"ATAQUE","CUERPO","COLA"};for(int i=0;i<3;++i){float x=677+i*128.f;double maximum=std::max({a[i],b[i],.001});float h1=static_cast<float>(a[i]/maximum*36),h2=static_cast<float>(b[i]/maximum*36);g.setColour(juce::Colour(0xff8392a6));g.fillRoundedRectangle(x,373-h1,25,h1,3);g.setColour(accent);g.fillRoundedRectangle(x+30,373-h2,25,h2,3);g.setColour(juce::Colour(0xffc0ccdc));g.setFont(11.f);g.drawText(names[i],static_cast<int>(x)-10,377,82,16,juce::Justification::centred);}g.setFont(11.f);g.setColour(juce::Colour(0xffbac7d8));g.drawText("Gris: antes / color: despues. Menor altura = menor distancia.",660,395,392,16,juce::Justification::centredLeft);
+        }else if(review&&focused>=0&&focused<getNumRows()){auto area=juce::Rectangle<float>(660,333,392,54);const auto& env=review->rows[focused].envelope;const char* names[]={"INICIO","CUERPO","FINAL"};for(int part=0;part<3;++part){g.setColour(accent.withAlpha(.035f+part*.025f));g.fillRect(area.getX()+part*area.getWidth()/3,area.getY(),area.getWidth()/3,area.getHeight());g.setColour(juce::Colour(0xffbcc9da));g.setFont(11.f);g.drawText(names[part],static_cast<int>(area.getX()+part*area.getWidth()/3),static_cast<int>(area.getBottom()),static_cast<int>(area.getWidth()/3),18,juce::Justification::centred);}juce::Path path;for(int i=0;i<24;++i){float x=area.getX()+i*area.getWidth()/23,y=area.getBottom()-env[i]*area.getHeight();if(i==0)path.startNewSubPath(x,y);else path.lineTo(x,y);}nova::glass::strokeGlow(g,path,accent,1.7f,this);}
+    }
+    void mouseDown(const juce::MouseEvent& e)override{if(!review||!waveform().contains(e.position)||getNumRows()==0)return;double t=(e.position.x-waveform().getX())/waveform().getWidth()*review->analysis.duration;int best=0;double distance=1e9;for(int i=0;i<getNumRows();++i){const auto& range=review->rows[i].note.range;double d=t<range.start?range.start-t:t>range.end?t-range.end:0;if(d<distance){distance=d;best=i;}}rows.selectRow(best);focus();}
+private:
+    void timerCallback()override{
+        if(!isShowing())return;detail.setFont(13.5f*p.textScale());auto next=p.reviewView();auto selected=p.chosenReviewRows();if(next!=review||selected!=chosen){review=next;chosen=selected;focused=review?std::clamp(focused,0,std::max(0,getNumRows()-1)):0;rows.updateContent();if(getNumRows()>0)rows.selectRow(focused);else rows.deselectAllRows();rows.repaint();}updateDetails();
+        bool busy=p.loading.load()||p.fitting.load();for(auto* c:std::initializer_list<juce::Component*>{&scan,&best,&none,&rows,&goal})c->setEnabled(!busy);scan.setEnabled(!busy&&p.hasReference());learn.setEnabled(!busy&&!chosen.empty());refine.setEnabled(!busy&&!chosen.empty());include.setEnabled(!busy&&getNumRows()>0);original.setEnabled(!busy&&getNumRows()>0);recreated.setEnabled(!busy&&getNumRows()>0);undo.setEnabled(!busy&&p.canUndoFit());cancel.setEnabled(busy);feedback.setText(busy?(p.reviewScanning()?"Revisando notas... ":"Buscando ajustes... ")+juce::String(static_cast<int>(p.fitProgress.load()*100))+" % | Cancelar conserva el instrumento.":p.status(),juce::dontSendNotification);feedback.setTooltip(p.status());original.setToggleState(p.referencePlaying()&&p.previewMode.load()==0,juce::dontSendNotification);recreated.setToggleState(p.referencePlaying()&&p.previewMode.load()==1,juce::dontSendNotification);repaint();
+    }
+};

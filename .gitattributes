@@ -1,0 +1,14 @@
+# Keep the published third-party tree byte-for-byte.
+Source/** text eol=lf
+Tests/** text eol=lf
+Packaging/*.py text eol=lf
+Packaging/*.c text eol=lf
+Packaging/*.h text eol=lf
+Training/*.py text eol=lf
+Training/*.cpp text eol=lf
+Training/*.json text eol=lf
+Training/*.bin -text
+*.md text eol=lf
+*.yml text eol=lf
+
+ThirdParty/** -text

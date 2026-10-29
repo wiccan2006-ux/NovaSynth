@@ -1,0 +1,665 @@
+NOVA SYNTH 0.17 BETA — SELECCION, CALIBRACION Y MODULACION
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+- 192 principales y 620 variantes dentro de los 812 programas existentes.
+  Seleccion por distancias espectrales/ADSR/ataque/anchura, no escucha humana.
+  Agrupacion por funcion; indices originales intactos y acceso a todos.
+  Encabezado y flechas recorren principales; filtro de etiquetas, variantes,
+  favorito, escucha, comparacion de fabrica/edicion y restablecer con undo.
+- Calibracion RMS de los 812, midiendo nota, acorde y acorde fuerte una octava
+  arriba, gate adaptado al ataque y cola. Ajuste -12..36 dB separado de ganancia
+  manual; compensacion con objetivo conjunto y restriccion de pico .70.
+  Mediana +17.4 dB; rango de RMS de solo aprox -63.69..-30.37 antes y
+  -36.74..-23.20 despues, en el ensayo (no LUFS ni parecido).
+- Proteccion opcional estereo vinculada de pico de muestra .95/recuperacion40ms.
+  Sin lookahead ni true-peak. Recorte final de seguridad conservado.
+- Cuatro conexiones guardadas/automatizables: seis origenes y cuatro destinos;
+  cantidad bipolar. LFO2 independiente, envolvente de voz, velocidad/registro/
+  azar por evento. Timbre para FM/wavetable. Toque ajusta ataque/filtro segun
+  intensidad. Sin destino de pitch, sincronizacion host ni envolvente adicional.
+- Parametros nuevos anadidos al final: orden e IDs anteriores preservados.
+  Estados/versiones antiguos se inicializan sin matriz/toque/compensacion.
+  Cargar un proyecto previo mantiene volumen; Nivel parejo se activa a pedido.
+
+VALIDACION
+- ProductionTests + ASAN/UBSAN: catalogo, 192 grupos, cobertura, ganancias,
+  24 combinaciones origen/destino, inversion bipolar, audio modulado,
+  proteccion/bypass/recuperacion L/R y acordes de 16 notas.
+- LevelTests: 2436 renders de los 812 presets en los tres ensayos de calibracion,
+  finitos y pico <= .7002. El limite es del ensayo, no de todo uso posible.
+- CoreTests, SignatureTests y SequenceTests pasan; conservan pruebas de busqueda,
+  MIDI, efectos, instrumentos sintetizados, secuencia y cancelacion.
+- Integracion nativa: filtros 192/812/48, seleccion de variantes por ID original,
+  nivel con ganancia manual conservada, comparar/recuperar/restablecer, UI de
+  matriz, estados y versiones con rutas, migracion antigua; cobertura anterior
+  de aprender/refinar/A-B/ARP. Capturas de componentes reales fuera de FL.
+- Compilacion Windows x64 y verificacion de instalador/VST3/fuentes/JUCE/ZIP.
+
+LIMITES
+No prueba de instalacion/FL Studio en Windows, ni escucha del audio real del
+usuario o evaluacion auditiva independiente del catalogo. No motor de capas,
+multisamples, separacion de instrumentos ni nuevo modelo neuronal. El ajuste
+de volumen no elimina las diferencias entre todos los registros y transitorios.
+
+HISTORIAL DE VALIDACION 0.16
+NOVA SYNTH 0.16 BETA — SIGNATURE / VIDRIO PERSONALIZABLE
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+- Cuatro macros automatizables neutros en cero; carga antigua sin macros los
+  restablece. Los IDs/orden de los parametros anteriores se conservan.
+- Nuevo banco Signature: 48 ajustes explicitos, seis pares de espectros
+  armonicos con siete niveles limitados en banda; 812 programas totales.
+  Los 764 anteriores retienen posiciones y parametros de banco. Calibracion
+  estatica moderada del volumen, no LUFS. No se promete originalidad universal.
+- Movimiento de espectro/filtro/anchura sin modular la frecuencia. Respuesta
+  de filtro a intensidad MIDI en los nuevos presets.
+- Vista principal con macros, Controles desplegables, visor en vivo inicial.
+- Hoja Aspecto: tinte/halo/texto/animaciones persistentes, siete colores.
+  Material interno inspirado en Liquid Glass; no es renderer nativo iOS.
+- Banco amplio: busqueda, seis categorias Signature, ficha/envolvente,
+  favoritos por proyecto/preset y audicion sintetizada de tres notas.
+  Liberacion de notas al detener, navegar, ocultar o cerrar el navegador.
+- No se reentreno la IA ni se agrego separador/transcriptor polifonico.
+
+PRUEBAS
+- SignatureTests: 48 sonidos finitos/audibles y distintos en las caracteristicas
+  medidas; distancia minima 0.04208 en este ensayo, no porcentaje de parecido.
+  Cuatro macros cambian audio; 16 voces y 22.05/48/96 kHz. ASAN + UBSAN pasan.
+- BankTests: 812 nombres y renders distintos; 748 posteriores a los originales,
+  posiciones anteriores preservadas. Algunos timbres antiguos siguen cercanos.
+- CoreTests y SequenceTests pasan: MIDI, efectos, optimizacion, secuencia,
+  cancelacion y propiedad del transporte de audicion.
+- Integracion nativa: navegacion, banco, favoritos, escucha con note-on/off,
+  preferencias, macros/paleta persistentes, migracion de presets antiguos y
+  prueba de clic sin oclusion del boton Banco. Tambien se conserva la cobertura
+  anterior de aprender/refinar/comparar/versiones/ARP. Capturas de componentes
+  reales, no de FL Studio.
+- Compilacion Windows x64 y verificacion de recursos del instalador, VST3,
+  fuentes correspondientes/licencias y ZIP alternativo.
+
+LIMITES
+Sin prueba del instalador/host en Windows ni FL Studio, audio real del usuario,
+verificacion perceptual independiente o firma digital. No se promete copia
+perfecta. Los dos parametros palette/velocitytone tienen acceso desde el host;
+no cuentan con editores dedicados nuevos. Las capturas nativas no validan
+DPI/foco de FL ni rendimiento en la maquina del usuario.
+
+HISTORIAL DE VALIDACION 0.15
+NOVA SYNTH 0.15 BETA — RECREAR, COMPARAR Y VERSIONES
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+- Tres espacios principales Instrumento / Recrear / Efectos. Recrear contiene
+  Muestra y recorte, Aprender, Comparar A/B y Versiones. Se conservan LAB/ARP
+  como editores avanzados. La onda de Muestra ocupa el alto disponible y
+  conserva zoom, campos, marcas, audicion y AutoFit. Cancelar tarea comun.
+- Tres tamanos de texto independientes de la ventana: normal, +10%, +20%,
+  en controles y lecturas principales, con preferencia persistente. Medidores
+  separados de pico de salida L/R. Se conservan vidrio oscuro, neon y temas.
+- Secuencia completa de eventos monofonicos establecida por el analisis;
+  separada de las ventanas cortas usadas para aprender. Sostenidos largos
+  no generan tres ataques por tener tres ventanas de aprendizaje.
+- Comparacion offline temporal: A original y B sintetizado a igual longitud,
+  con notas/tiempos/duraciones/intensidades estimadas. No usa el PCM como
+  instrumento y omite ARP/pitch bend del host. Cada escucha inicia al principio.
+  Dos ondas, eventos y distancias de hasta ocho notas; opcion RMS con limite
+  de pico. No es LUFS ni garantiza igualar RMS cuando limita el pico.
+- Invalidacion de comparaciones al cambiar parametro/modelo/banco/referencia/
+  revision/volumen igualado. Render en trabajador, cancelable, y audio compartido
+  e inmutable solo con el transporte de audicion. No copia un clip largo al
+  callback de audio ni destruye buffers grandes en ese callback.
+- Hasta doce versiones de parametros/modelos/banco/ARP/programa. Guardado manual
+  y automatico despues de recreacion/refinamiento valido, con punto inicial.
+  Se persisten con el proyecto/preset sin PCM original ni comparaciones. Al
+  llenarse se reemplaza la mas antigua. Restaurar admite deshacer; aspecto
+  independiente del sonido. Validacion de historial antes de modificar el estado.
+
+PRUEBAS DE ESTA VERSION
+- SequenceTests: tres notas/velocidades, posiciones y silencio inicial, duracion
+  completa, medicion de las tres alturas (<1.5 cents segun detector), niveles
+  RMS, copia de comparacion sin modificar la referencia original, un sostenido
+  de ocho segundos como un evento, vida util de audio compartido, stop por
+  generacion, cancelacion y rechazo de secuencia vacia. Paso tambien ASAN y
+  UBSAN con deteccion de fugas desactivada.
+- AssistantTests y PreviewTests anteriores recompilados y aprobados: revision,
+  seleccion, bancos, cuatro objetivos, cancelaciones y transporte a varias tasas.
+- EditorIntegrationTests ampliado paso sobre editor/componentes JUCE nativos
+  reales en X11 virtual. Conserva pruebas previas de carga/fit/revision de doce
+  notas/aprendizaje de ocho zonas/refinamiento/undo/cancel/MIDI/modelos/preferencias.
+  Nuevas comprobaciones: versiones automaticas; restaurar parametros, ganancia,
+  banco y patron/BPM/activacion ARP; deshacer restauracion; preparar secuencia
+  completa de doce eventos; escuchar A/B mediante transporte; invalidar cache
+  por cambio de parametro; cancelar comparacion sin publicar audio obsoleto;
+  limite de doce versiones; persistencia/lectura/restauracion de historial y
+  banco de ocho zonas sin referencia; historial corrupto rechazado sin modificar
+  estado; preset antiguo sin historial ni textSize carga con defaults.
+- Capturas de componentes reales en siete temas y pantallas de instrumento,
+  recorte ampliado, aprendizaje, comparacion musical, versiones, efectos y
+  texto grande; tamanos minimo/maximo. Se revisaron las pantallas principales.
+  Son capturas de prueba nativa, NO de FL Studio ni Windows.
+- Compilacion Windows x64 con JUCE 7.0.12 y LLVM-MinGW 20250114. Paquete verifica
+  0.15.0, exports VST3, recursos, correspondencia de fuentes/pruebas/guia,
+  distribucion JUCE completa e identidad/CRC del ZIP alternativo.
+
+LIMITES
+La secuencia detectada no es una transcripcion polifonica ni separa instrumentos.
+Puede omitir notas o aproximar tiempos; las intensidades no son MIDI recuperado.
+Medidas internas no son porcentajes de parecido. Los ejemplos son sinteticos;
+el usuario no ha aportado su muestra real problematica. Sin red nueva entrenada
+con grabaciones reales, sin separacion automatica de instrumento/efectos y sin
+garantia de copia exacta. El refinamiento mantiene el algoritmo de 0.14.
+El historial es por preset/proyecto, conserva doce entradas y no incluye fuentes
+PCM, seleccion, revision ni renders A/B. Al reabrir se deben cargar las referencias
+para comparar/refinar. El texto no cambia todos los titulos ni todas las leyendas;
+los controles largos se ajustan a su espacio. La ventana conserva su ratio.
+Pendiente instalacion/ejecucion en Windows/FL Studio, foco/DPI/teclado del host,
+automatizacion y rendimiento completo en el equipo real. Las pruebas nativas
+no certifican esas comprobaciones. No hay firma digital del instalador.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.14 BETA — ASISTENTE DE RECREACION
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+Asistente con revision previa a aprender: waveform, lista de hasta 512 regiones,
+estabilidad tonal, dispersion P90-P10, clipping, intensidad relativa y curva RMS.
+Eleccion explicita de hasta ocho referencias; recomendaciones revisadas despues
+de comprobar clipping, sin descartar notas cercanas solo por ser adyacentes.
+Audicion A/B de la fila, doble clic, cursor de referencia y tecla Espacio.
+Aprender elegidas no rellena referencias excluidas; las notas se vuelven a
+confirmar y el informe muestra elegidas/aceptadas. Bancos de osciladores,
+sin PCM de referencia. Curva de envolvente normalizada en inicio/cuerpo/final.
+Refinamiento alrededor del instrumento actual: equilibrado, ataque, cuerpo,
+menos metalico. Conserva motor/asignacion tonal y compara todas las referencias
+elegidas de un banco a sus alturas/intensidades relativas; usa una fila en
+un patch simple. Guarda el mejor objetivo, mantiene una restriccion explicita
+sobre la distancia de cuerpo en ese modo y verifica tono al final cuando hay
+fundamental fiable. Grafico y cifras antes/despues por dimension.
+Cancelar, deshacer/intercambiar y estado de revision; cambiar el fragmento
+invalida la revision y cambiar las elecciones de un banco exige reaprender.
+Mantiene apariencia, texto, presets, efectos y motores de 0.13.
+
+PRUEBAS EJECUTADAS
+- AssistantTests: frase sintetica de 12 s/seis notas, progreso, recomendaciones,
+  inclusion/exclusion exacta, banco de solo dos notas elegidas con offset,
+  duplicados y limites, clipping visible y excluido de recomendaciones,
+  cancelacion de revision, cuatro objetivos de refinamiento, limites y mejora,
+  conservacion de motor y asignacion tonal, guardia de cuerpo, modelos inmutables,
+  comparacion de dos zonas por nota/intensidad y rechazo de silencio.
+  Paso tambien AddressSanitizer y UndefinedBehaviorSanitizer, fugas desactivadas.
+- Caso controlado de discrepancia espectral/temporal: objetivo equilibrado
+  0.0376465 > 0.0141326; ataque 0.0247338 > 0.0120366;
+  cuerpo 0.0536934 > 0.0191209; menos metalico 0.0392772 > 0.015426.
+  Son objetivos distintos de una prueba sintetica, NO porcentajes ni una
+  demostracion de fidelidad con instrumentos reales.
+- ContextTests anterior paso: 32 s, seis notas, ocho zonas, posiciones tardias,
+  diversidad, estereo, limites, cancelacion y banco sintetizado.
+- ImprovementTests anterior paso: animaciones, A afinado, nota manual en A/B,
+  diagnostico de octava, rechazo de inestabilidad y alternativas.
+- EditorIntegrationTests ampliado: componentes JUCE nativos reales en display
+  virtual X11; carga y revision asincronas conservan el patch, seleccion vacia
+  rechazada, aprendizaje de una nota, revision/version aprendida, refinamiento
+  con informe, deshacer/rehacer controles de banco, diagnostico A/B de fila,
+  cancelaciones sin sobreescribir, invalidacion por cambiar elecciones o
+  fragmento. Ademas contexto WAV de 12 s/doce notas, clipping en una region,
+  recomendaciones de ocho sin clipping, limite de ocho y sustitucion manual,
+  aprendizaje efectivo de las ocho zonas elegidas y persistencia del instrumento.
+  Conserva la comprobacion de MIDI, notas alternativas, teclado de componentes,
+  nota manual, comparacion, serializacion y preferencia de animaciones de 0.13.
+- Revision visual de capturas de componentes reales: asistente revisado,
+  refinado con barras antes/despues, contexto de multiples notas y clipping,
+  tamanos minimo/maximo. No son capturas de FL Studio ni prueba de Windows.
+- Compilacion Windows x64 con JUCE 7.0.12 y LLVM-MinGW 20250114.
+  Paquete verificado: version 0.14.0, VST3/exports, recursos, correspondencia
+  de fuentes, JUCE completo e identidad/CRC del ZIP alternativo.
+
+LIMITES
+Sin nuevo entrenamiento con grabaciones reales. Sin separacion automatica de
+instrumento/efectos ni deteccion infalible de acordes/mezclas. La cobertura
+periodica no identifica con certeza la causa de una region poco util.
+La intensidad es relativa al nivel del archivo, no velocidad MIDI recuperada.
+Los informes muestran medidas internas y el ultimo refinamiento, no analisis
+permanente de cada cambio de perilla. Las escalas de barras son por dimension.
+La verificacion tonal incierta no certifica afinacion correcta.
+Revisiones, originales e informes son temporales; el instrumento y banco
+si se guardan sin PCM. El usuario no ha aportado su muestra real problematica.
+Pendientes instalacion/ejecucion en Windows y FL Studio, foco/teclado/DPI del
+host, automatizacion y rendimiento completo de audio/GUI en el equipo real.
+No se garantiza una copia perfecta ni 99.99% de parecido.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.13 BETA — COMPARAR, AFINAR Y ANIMAR
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+Tipografia ligeramente mayor, transiciones de botones/switches, brillo de teclas
+con caida, nivel y mini onda de salida real y reflejo durante el analisis.
+Interruptor Animaciones persistente. Material interno inspirado en iOS conservado;
+LAB/ARP tienen una base oscura para que no interfieran los controles inferiores.
+LAB: referencia A afinada en cents, nota MIDI manual, centrado de controles,
+deshacer/intercambiar instrumento completo, hasta tres alternativas de motores
+realmente evaluados para nota corta, eleccion de zona A/B y revision de filas
+manuales. ARP: exportacion MIDI de un compas con PPQ 960, gate 80%, intensidad 100.
+Contexto: medida P90-P10 de variacion tonal y descarte de regiones >75 cents;
+prioridad a regiones estables. Verificacion de nota/octava por candidato corto
+cuando el detector confirma una fundamental con confianza >0.85. Si el ganador
+falla, no se publica. Medicion incierta no equivale a afinacion correcta.
+
+PRUEBAS EJECUTADAS EN ESTA VERSION
+- ImprovementTests: suavizado independiente de frecuencia de cuadros, reduccion
+  de movimiento, valores no finitos, A original +37 cents y A afinado a A4,
+  diagnostico respecto a MIDI y error de octava, nota manual en A/B,
+  rechazo de contexto inestable y candidatos reales de al menos tres motores.
+  Paso tambien AddressSanitizer/UndefinedBehaviorSanitizer (fugas desactivadas).
+- InstrumentTests: 60 combinaciones de motor/tasa/nota; zonas por nota/intensidad,
+  serializacion, RMS A/B, diagnostico, busqueda de cinco motores, etapas,
+  cancelacion y red Multi (83/96, MSE 0.0100257 en holdout sintetico).
+- ContextTests: frase sintetica de 32 s, seis notas, ocho zonas, referencia tardia,
+  intensidades relativas, estereo, cancelacion, limites 3/60 s y persistencia
+  del banco sintetizado. Paso tambien ASAN/UBSAN, fugas desactivadas.
+- TuningTests: referencias -37 y +37 cents recreadas a 439.999 Hz segun el
+  detector interno; ajustes nativos y primera nota del arpegio.
+- PreviewTests y ArpTests pasaron: transporte de referencia a distintas tasas,
+  generaciones, stop, mezcla, pitch original y patron mono de 16 pasos.
+- EditorIntegrationTests: editor y componentes JUCE reales nativos, en un display
+  virtual X11; centra/deshace/rehace, carga/fit asincronos, tres alternativas,
+  cambio de motor y vuelta al anterior, borrado de una referencia concreta,
+  diagnostico, roundtrip MIDI (notas/silencios/gates/PPQ) y preferencia de movimiento.
+  Se detecto y corrigio el orden de restauracion modelo/parametros con el editor
+  abierto. Capturas de componentes reales en siete temas, LAB, ARP, MUESTRA y
+  tamanos minimo/maximo. No son capturas de FL Studio ni validan el host Windows.
+- VST3 y EXE compilados Windows x64; se verifican version 0.13.0, exports,
+  identidad del VST3 incluido, fuentes empaquetadas e igualdad/CRC del ZIP.
+
+LIMITES
+Sin nueva red entrenada con instrumentos reales. Sin separacion automatica de
+instrumento/efectos ni transcripcion polifonica universal. Candidatos por motor
+no son tres modelos nuevos. Medidas internas no son porcentajes de parecido.
+Se ha usado audio sintetico de prueba, no la muestra real del usuario.
+Pendiente: ejecucion del instalador y validacion completa en Windows/FL Studio,
+DPI/foco/teclado del host, automatizacion y rendimiento de repintado/audio real.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.12 BETA — VIDRIO INSPIRADO EN iOS
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+CAMBIOS VISUALES
+- Fondo interno desenfocado con cache por color, capas translucidas, bordes
+  luminosos, sombras de contacto y reflejos difusos. Los controles muestrean
+  el fondo en su posicion dentro del canvas del editor.
+- Botones y menus de capsula, switches redondeados con thumb blanco,
+  perillas y teclado de vidrio. LAB, MUESTRA, banco y ARP comparten material.
+- Siete colores y sus indices conservados; neon en valores y selecciones.
+- Interpretacion propia inspirada en iOS: no usa componentes Apple, no hay
+  captura del escritorio ni transparencia de la ventana host.
+
+VALIDACION
+- Dibujo nativo con JUCE Graphics de los materiales compartidos y una
+  composicion aproximada de paneles, controles, switches, curva y teclas.
+  Las siete variantes se renderizaron y revisaron; azul y blanco se
+  inspeccionaron a tamano completo. Es una prueba de materiales, no una
+  captura de la GUI completa ni de FL Studio. El macro exclusivo de prueba
+  omite la busqueda de origen del componente; en el plugin real se conserva.
+- Archivos DSP, parametros, procesamiento, contexto, decodificacion, formato
+  de modelos y pesos neuronales se compararon byte a byte con 0.11 y son
+  identicos. No se repitieron pruebas de audio para un cambio de dibujo.
+- VST3 compilado para Windows x64. Instalacion, interfaz completa, foco,
+  DPI y rendimiento de repintado quedan pendientes dentro de FL Studio.
+  No se afirma que el material sea identico al renderizador nativo de iOS.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.11 BETA — CONTEXTO LARGO / INSTRUMENTO
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+- Seleccion de hasta 60 segundos con Contexto / instrumento activado; el
+  modo de nota corta conserva el limite de 3 segundos. Al cargar se marca
+  inicialmente un maximo de 15 segundos. Archivos fuente hasta 60 minutos.
+- Lectura y barrido tonal de todo el contexto. Segmentacion monofonica,
+  descarte de silencios, seleccion de hasta ocho ejemplos por diversidad
+  de registro e intensidad relativa, extraccion de notas de hasta 2 segundos.
+- Reconstruccion de esos ejemplos en un banco de osciladores/envolventes.
+  MIDI y piano roll siguen disparando sintesis, sin reproducir la frase PCM.
+- Marcas sobre la onda y listado de los ejemplos utilizados en LAB.
+- Espacio / Escuchar audiciona la seleccion completa como referencia.
+  LAB A/B y diagnostico usan una nota representativa del contexto aprendido.
+- ARP se desactiva al aplicar un contexto, para tocar libremente desde MIDI.
+- El banco y la preferencia Contexto se guardan; no se guardan el audio,
+  la lista de posiciones ni el archivo original. La fuente debe recargarse.
+
+PRUEBAS EJECUTADAS
+- ContextTests: frase sintetica de 32 s con 8 s de silencio inicial y 24
+  eventos de seis alturas, repetidos a dos niveles. Se encuentran 24 eventos,
+  seis notas y ocho regiones representativas, incluidas regiones despues
+  del segundo 15. Se comprueba el contenido de las notas extraidas con una
+  medicion de afinacion independiente del barrido de contexto.
+- La funcion real usada por el procesador aprende las ocho zonas, activa
+  el banco de sintesis y conserva las posiciones absolutas para un contexto
+  con desplazamiento de 125.25 s en el archivo. Progreso monotono hasta 1.
+- Entradas a 16/48 kHz, canales estereo en oposicion con distinta ganancia,
+  silencios y cancelacion durante el barrido. Formato de modelos verificado.
+- Limites de seleccion 3/60 s, movimiento y bordes cerca de EOF, conversion
+  a frames y rechazo del recorte largo por lectores de nota corta.
+- SelectionTests anterior sigue pasando las 10.000 combinaciones.
+- ReferenceFileTests: WAV real de 65 s a 8 kHz; lectura de 2 a 62 s devuelve
+  exactamente 480.000 frames por canal y se verifican posiciones al principio,
+  mitad y final. Recortes de mas de 60 s rechazados. Los casos anteriores de
+  lectura exacta tras 30 s, EOF, cancelacion y archivo modificado siguen pasando.
+- ContextTests completo paso AddressSanitizer y UBSan con deteccion de fugas
+  desactivada por limitacion del entorno.
+- Los motores DSP, pesos de IA y formato de bancos son los de 0.10: no se
+  reentreno la red para esta funcion. La nueva segmentacion es heuristica.
+- VST3 compilado para Windows x64. La GUI y el instalador no se ejecutaron
+  dentro de Windows/FL Studio; quedan por comprobar alli foco, eventos,
+  salida de audio, dibujo de marcas y persistencia del estado completo.
+
+LIMITES
+Los ensayos usan sonidos sinteticos controlados; no certifican precision con
+instrumentos reales. La intensidad es relativa al nivel del archivo, no una
+velocidad MIDI real recuperada. No se separan instrumentos en mezclas ni se
+hace transcripcion polifonica a MIDI. Mas segundos de una sola nota o una
+mezcla confusa pueden no aportar informacion util. El limite de ocho zonas
+obliga a escoger ejemplos; no se conserva toda la evolucion de la frase.
+No hay garantia de copia perfecta ni de reconocimiento de todas las notas.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.10 BETA — MULTI ENGINE + LAB
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+IMPLEMENTADO
+- Cinco motores: FM/subtractive, parciales, tablas periodicas procedurales,
+  cuerda pulsada por guia de ondas y soplo/resonador por guia de ondas.
+- Busqueda por fases: afinacion/analisis, timbre y motores, refinamiento de
+  envolvente, efectos. Se retiene el mejor candidato y se puede cancelar.
+- Proteccion de fundamental: el ajuste automatico excluye suboscilador y
+  octavas inferiores de OSC B; la edicion manual conserva esos controles.
+- LAB: audicion Original/Recreado renderizado desde parametros actuales,
+  volumen RMS comparable con limite de pico, medicion de tono y distancias
+  de ataque/cuerpo/envolvente. La comparacion no es un porcentaje de parecido.
+- Hasta ocho recortes de notas/intensidades: analisis a modelos de parciales,
+  eleccion por proximidad de nota y fuerza MIDI, persistencia sin audio PCM.
+- NovaSeed Multi 1: propone prioridad de familias y parametros para FM,
+  wavetable, cuerda y soplo. Sus propuestas se evaluan por audio renderizado.
+
+PRUEBAS EJECUTADAS
+- InstrumentTests: 60 combinaciones de motores 0/2/3/4, notas 48/69/84 y
+  8/22.05/44.1/48/96 kHz: finitas, audibles, dentro de 6 cents del tono
+  esperado segun el detector interno. No es una certificacion perceptual.
+- Cambiar Table Scan modifica la onda sintetizada.
+- Banco de cuatro zonas por nota y fuerza: seleccion correcta, transposicion
+  respecto de la raiz de la zona, ida/vuelta del formato binario sin perdida,
+  rechazo de truncados y velocidades invalidas.
+- Audicion A/B iguala RMS en el caso controlado; diagnostico conserva tono y
+  arroja distancias casi nulas para audios equivalentes con distinta ganancia.
+- Busqueda de 140 pruebas: todos los motores evaluados, cuatro fases,
+  progreso monotono, mejor candidato conservado entre fases y cancelacion.
+- Inferencia C++ del modelo Multi sobre 96 ejemplos reservados: MSE de
+  parametros 0.0100257, clasificacion correcta en 83/96. Es corpus sintetico.
+- InstrumentTests y PreviewTests pasan AddressSanitizer y UBSan con deteccion
+  de fugas desactivada por limitacion del entorno.
+- CoreTests, TuningTests, PreviewTests, SpectralBench, ArpTests, SelectionTests,
+  ResynthTests, BankTests y ReferenceFileTests pasan como regresion.
+- Los 764 presets mantienen nombres y salidas distintas en BankTests; no
+  significa que todos sean perceptualmente muy diferentes.
+- SpectralBench: distancia final 0.00810245 frente a 0.153639 del motor nativo,
+  con seis parciales inarmonicos conservados; caso de 14 kHz tambien pasa.
+- Benchmark nativo de 1 segundo de audio, 16 voces/48 parciales/12 bandas a
+  48 kHz: 0.44256 s de tiempo de pared en este entorno. No predice el consumo
+  de CPU dentro de FL Studio ni en otro ordenador.
+
+ENTRENAMIENTO
+8192 ejemplos originales: 7021 de entrenamiento y 1171 reservados.
+Clasificador 155 > 48 > 4 y regresor condicionado 159 > 80 > 48 > 30.
+En los 1171 reservados: acierto de familia 86.0803 %, MSE 0.01027331.
+El regresor alcanzo el limite de 180 iteraciones sin declarar convergencia.
+No hay grabaciones reales en el entrenamiento, modelo DDSP real ni evidencia
+nueva de fidelidad perceptual en instrumentos reales. Generadores, scripts,
+pesos, informes y subconjunto reservado incluidos en las fuentes.
+
+LIMITES Y COMPROBACIONES PENDIENTES
+No se ejecuto el instalador ni el VST3 dentro de Windows/FL Studio.
+La GUI completa, foco, teclado, automacion, persistencia APVTS y salida en el
+host requieren validacion alli; el formato de modelos si se probo por separado.
+Los modelos fisicos son aproximaciones sencillas. El banco selecciona zonas
+por proximidad; no hace interpolacion continua ni entrenamiento neuronal de
+las grabaciones del usuario. Las referencias y su lista son temporales; solo
+los modelos sintetizados e intensidades se guardan en el proyecto.
+A/B se renderiza al pulsar el boton, no conmuta en tiempo real durante la frase.
+Los arpegios siguen siendo una estimacion monofonica de 16 pasos; no hay
+transcripcion polifonica universal. La muestra real que el usuario describio
+como desafinada no se ha recibido ni reproducido aqui. No se promete copia
+perfecta ni una solucion comprobada para ese archivo concreto.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.9 — AFINACION Y ESCUCHA DEL RECORTE
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+PRUEBAS 0.9
+- TuningTests: referencias sinusoidales -37/+37 cents se reconstruyen en La
+  440 Hz (439.999 Hz segun el detector interno). El buscador compara una
+  referencia centrada, en lugar de favorecer su desafinacion original.
+- Medicion de 55, 110, 261.626, 880 y 1760 Hz con +23 cents a 8, 44.1,
+  48 y 96 kHz: error menor de 1.2 cents en las 20 combinaciones controladas.
+- Limpieza de seis parciales desdoblados a -17/+18 cents: combina tres
+  pares y los situa sobre armonicos exactos. Comprueba notas MIDI 57/69/81.
+- Sonido inarmonico de prueba: no se obliga a una rejilla armonica.
+- PreviewTests: escucha a frecuencia original, estereo, cursor en segundos
+  del archivo, conversion al host desde 8/44.1/48/96 kHz, parada manual,
+  final automatico, descarte de lecturas antiguas y mezcla con el instrumento.
+- ReferenceFileTests: lectura real de WAV estereo de 32 s; escucha y analisis
+  decodifican exactamente los mismos 4000 frames de 30.125-30.625 s.
+  Incluye fin de archivo, cancelacion y deteccion de archivo modificado.
+- TuningTests y PreviewTests pasan AddressSanitizer y UndefinedBehaviorSanitizer
+  (deteccion de fugas desactivada por limitacion del entorno).
+- CoreTests, ArpTests y SelectionTests pasan como regresion.
+- SpectralBench conserva 6 parciales inarmonicos; distancia 0.00810245
+  frente a 0.159191 del ajuste nativo. Conserva tambien el caso de 14 kHz.
+- VST3 compilado para Windows x64; boton, cursor, opcion Tono limpio y
+  atajo Espacio se incluyen en el codigo compilado. Los tests de escucha
+  son pruebas del transporte y lectura de audio, no de eventos de teclado
+  ni de la salida del host.
+
+LIMITES
+No se ejecuto en Windows ni dentro de FL Studio. Quedan por comprobar alli
+instalacion, salida de audio, foco/atajo Espacio, interfaz y reapertura de
+proyectos. No se dispone de la muestra del usuario que sigue sonando mal:
+no se afirma que ese caso concreto se haya reproducido o resuelto.
+Los ensayos son sinteticos, no una validacion de instrumentos reales.
+La resintesis de 48 parciales no garantiza copia exacta ni elimina todos los
+defectos de grabacion. Los patches antiguos necesitan una nueva recreacion
+para aplicar la limpieza. La muestra original solo se oye en la escucha
+independiente; el teclado sigue generando el sonido por sintesis.
+
+HISTORIAL DE VERSIONES ANTERIORES
+
+NOVA SYNTH 0.8 NEON Y LIQUID GLASS
+Desarrollador: Eleander Sanchez (Bodby Olwen)
+
+ACTUALIZACION 0.8 — INTERFAZ
+- Cambios exclusivos de dibujo: paneles con degradados y reflejos, perillas
+  con halos y aros luminosos, botones, menus, teclado, graficas, muestra,
+  navegador y editor de arpegios con estilo oscuro de vidrio y neon.
+- Indices y siete colores anteriores conservados. La interfaz conserva los
+  mismos controles, posiciones y rutas de audio.
+- Los metodos graficos compartidos se dibujaron con JUCE Graphics en una
+  prueba nativa aproximada de paneles, curvas y perillas, y se revisaron en
+  los siete colores. No es una captura de la GUI completa ni de Windows.
+- TuningTests sigue pasando con -37/+37 cents como prueba de regresion.
+- VST3 e instalador compilados para Windows x64. Esta version no se ejecuto
+  en Windows/FL Studio: quedan pendientes las comprobaciones visuales de la
+  GUI completa, DPI, rendimiento del brillo y comportamiento del instalador.
+
+ACTUALIZACION 0.7 — PRUEBAS EJECUTADAS
+- TuningTests: dos referencias sinusoidales controladas, a -37 y +37
+  cents de La 440 Hz, se recrearon a 440.250 y 440.248 Hz respectivamente
+  segun el detector interno. Prueba con motor de parciales.
+- Notas de 200 ms: deteccion de frecuencia dentro de 2 Hz de la referencia.
+- Motor FM de busqueda: tono centrado, sin unison ni chorus automatico;
+  segundo oscilador en intervalos de octava.
+- Arpegio sintetico: mantiene la frecuencia medida de la primera nota
+  para calcular la correccion en lugar de sustituirla por la nota redondeada.
+- TuningTests paso AddressSanitizer y UndefinedBehaviorSanitizer con
+  deteccion de fugas desactivada por limitacion del entorno.
+- CoreTests: paso, distancia de prueba 0.484693 -> 0.0593094; se aceptan
+  restricciones de afinacion a costa de posibles diferencias de timbre.
+- SpectralBench y ArpTests pasaron en pruebas nativas controladas.
+- Siete temas con indices previos conservados y tres indices nuevos;
+  brillos pintados en controles y graficas. No hay prueba visual en el host.
+
+Se compilo para Windows x64. No se ha ejecutado en Windows/FL Studio:
+quedan pendientes instalacion, GUI, temas, restauracion de estado en el host
+ y escucha con instrumentos reales. La deteccion puede fallar con sonidos
+ruidosos, polifonicos o inarmonicos; no se promete afinacion perfecta.
+
+ACTUALIZACION 0.6 — PRUEBAS EJECUTADAS
+- ArpTests: una secuencia monofonica sintetica de 16 notas detecta raiz,
+  intervalos y BPM esperado; silencio rechazado. La prueba no mide la
+  precision con instrumentos reales, acordes o mezclas.
+- ArpClock: dos notas, silencios, limites de paso, duracion de compuerta,
+  contabilizacion de bloques y parada al soltar la nota.
+- Gain: incremento de 6 dB medido como aproximadamente cuatro veces la
+  energia en una senal controlada.
+- BankTests: 764 nombres y salidas de audio unicos; 700 presets posteriores
+  a los 64 originales. Minima distancia de rasgos 0.00190644 y cuatro pares
+  por debajo de 0.003; pueden existir sonidos perceptualmente parecidos.
+- ArpTests paso tambien AddressSanitizer y UndefinedBehaviorSanitizer antes
+  de la incorporacion del test adicional de reloj/ganancia; estos ultimos
+  se ejecutaron como pruebas C++ nativas normales.
+- CoreTests paso conservando los 64 sonidos originales y funciones basicas.
+
+La IA de estimacion de parametros es la misma NovaSeed de la version 0.4;
+el nuevo analizador de arpegios es un algoritmo de tono, no IA entrenada.
+La deteccion y el sonido de instrumentos reales no se han validado aqui.
+El VST3 y el instalador fueron compilados para Windows x64. No se han
+probado en Windows ni dentro de FL Studio desde este entorno; faltan
+validaciones de la interfaz, automatizacion, persistencia en el host,
+reproduccion en tiempo real y comportamiento del instalador/desinstalador.
+
+ACTUALIZACION 0.5 — PRUEBAS EJECUTADAS EN ESTA VERSION
+SelectionTests.cpp:
+- 10.000 combinaciones de seleccion, movimiento y bordes mantienen limites.
+- Conversion a frames a 8, 44.1, 48 y 96 kHz.
+- Seleccion 125.25-126.75 s: offset 6.012.000, longitud 72.000 a 48 kHz.
+- Arrastre inverso, limite explicito de 3 s, rechazo no finitos.
+- Resumen de picos conserva un transitorio y el ultimo bloque incompleto.
+- makeTarget con trimOnset=false conserva duracion y silencio inicial.
+
+ReferenceFileTests.cpp (con modulos JUCE core/audio_basics/audio_formats nativos):
+- Se crea un WAV estereo de 32 segundos, con 220 Hz en la primera mitad
+  y 660 Hz en la segunda.
+- Se lee la onda completa, incluidos los ultimos segundos y niveles de detalle.
+- Seleccion 30.125-30.625 s: solo se decodifican 4.000 frames a 8 kHz.
+  Cada frame se compara con su posicion exacta del archivo original,
+  tolerando unicamente la cuantizacion PCM de 16 bits.
+- La deteccion de afinacion encuentra 660 Hz en ese fragmento.
+- Seleccion hasta fin de archivo, carga cancelada y archivo modificado.
+- Los tests de lectura se ejecutaron sobre WAV; los otros formatos se
+  compilaron en el VST3, sin pruebas de decodificacion nuevas en esta suite.
+
+BankTests.cpp:
+- 364 nombres unicos: los 64 originales y 300 nuevos.
+- 364 salidas de audio distintas por hash; finitas y audibles a nota de prueba.
+- Las 300 nuevas tambien difieren en rasgos espectrales, envolvente y anchura;
+  distancia minima entre ellas: 0.0237923 (umbral de prueba 0.003).
+- Rangos de osciladores, filtro, afinacion y detune validos.
+- Numeracion/parametros de los 64 programas anteriores conservados.
+- Es una prueba numerica de variedad; no una certificacion perceptual,
+  de calidad musical ni de equivalencia con Nexus u otras bibliotecas.
+
+CoreTests.cpp se volvio a ejecutar con los cambios de esta version y paso,
+con los mismos resultados de ajuste anotados mas abajo.
+
+SelectionTests, BankTests y el codigo de aplicacion de ReferenceFileTests
+pasaron AddressSanitizer y UndefinedBehaviorSanitizer. Los objetos JUCE
+nativos usados por ReferenceFileTests se compilaron sin instrumentacion.
+Deteccion de fugas desactivada por limitacion del entorno.
+
+REGRESIONES DEL MOTOR Y MODELO (resultados de la version 0.4 conservada)
+PRUEBAS NATIVAS C++ (GCC, sin FL Studio)
+CoreTests.cpp:
+- 64 presets audibles y finitos, 16 voces, sustain y liberacion.
+- Pitch de referencia, resampling, override de nota raiz, silencio rechazado.
+- No se puede activar reproduccion PCM mediante el antiguo modo sampler.
+- Optimización monotona y cancelacion conservadas.
+- Referencia sintetica fuera de preset: distancia 0.484693 -> 0.0322607,
+  mejor configuracion inicial 0.0438508, 260 pruebas.
+- Cinco efectos y sus bypass; estabilidad a 22.05, 44.1, 48 y 96 kHz.
+
+SpectralBench.cpp:
+- Seis sinusoides inarmonicas con decaimientos: motor FM 0.159425,
+  banco seleccionado 0.00807796.
+- Referencia sintetica de 14 kHz a 44.1 kHz: FM 0.262640,
+  banco seleccionado 0.00297439.
+- Ganancias de parciales a cero y ruido desactivado: silencio.
+- Modelo 220 Hz transpuesto una octava: 220 ciclos positivos en 0.5 s,
+  equivalente a 440 Hz, a 48 kHz.
+- Rechazo de frecuencia NaN y cantidad de parciales invalida.
+
+ResynthTests.cpp:
+- Inferencia neuronal C++ sobre 64 ejemplos sinteticos reservados:
+  MSE de parametros 0.013524.
+- Distancia media de rasgos de audio en esos ejemplos, sin componente de
+  ataque (no guardada en las entradas del corpus): propuesta neuronal
+  0.263393, preset 0 0.416439; la propuesta mejora 56 de 64 casos.
+  Es una comparacion con un preset inicial, no con la busqueda completa.
+- Una senoide controlada de 220 Hz con vibrato de 5 Hz: se detecta
+  movimiento; distancia con seguimiento 0.0141662 y congelado 0.0175200.
+- Ruido generado audible y finito; Residual/Air=0 lo silencia.
+- Guardado/restauracion V2 exacta de amplitudes, trayectorias y ruido.
+- Rechazo de blobs truncados, ruido NaN y trayectorias NaN.
+- Migracion V1 de 20 puntos a 64, conservando frecuencias fijas.
+- Maquina de estados de teclado: acorde, ausencia de redisparo por
+  repeticion, liberacion por desactivacion/perdida de foco y cierre/octava.
+- Interruptor IA: se evaluan propuestas al activar y se omiten al desactivar.
+
+MODELO NOVASEED 1
+Red 155-96-64-30, ReLU, salida acotada en inferencia. 6.144 ejemplos
+procedurales originales. 5.120 para entrenamiento (con una particion
+interna de validacion) y 1.024 reservados sin entrenar sobre ellos.
+MSE en los 1.024 reservados: 0.0139827; predecir parametros promedio
+obtiene 0.0353809. Informe completo en Training/ModelReport.json.
+No se han usado grabaciones de instrumentos reales ni datos del usuario.
+Las etiquetas de instrumento siguen siendo heuristicas.
+
+RENDIMIENTO ORIENTATIVO
+PerformanceBench.cpp: 1 segundo de audio a 48 kHz con 16 voces,
+48 parciales con trayectorias y 12 bandas de ruido por voz: 0.196136 s
+medidos en este host nativo. No es una medicion de CPU en Windows,
+no incluye el host/GUI y no garantiza la misma carga en el equipo del usuario.
+
+Las distancias son medidas internas, NO porcentajes de exactitud.
+Las senales controladas no demuestran fidelidad con instrumentos reales.
+No se afirma una copia indistinguible ni precision del 99.99 %.
+La busqueda compara opciones con y sin ruido/movimiento y un banco fijo,
+para evitar imponer funciones nuevas cuando empeoran la referencia.
+
+SANITIZADORES
+AddressSanitizer y UndefinedBehaviorSanitizer pasaron en CoreTests,
+SpectralBench y ResynthTests. Deteccion de fugas desactivada por una
+limitacion del entorno.
+
+COMPILACION Y PAQUETE
+Windows x64, JUCE 7.0.12 y LLVM-MinGW 20250114. Se verifican exports
+VST3, DLLs requeridas, identidad/version del instalador, igualdad del
+VST3 incorporado y correspondencia de las fuentes empaquetadas.
+Los modelos no contienen PCM de referencia ni tablas de onda importadas.
+El plugin no requiere Python, sklearn, internet ni descargar pesos.
+
+PENDIENTE DE VALIDACION EN EL DESTINO
+No se ha ejecutado esta version bajo Windows/FL Studio desde este entorno.
+Faltan pruebas reales de seleccion y zoom con raton dentro del host,
+filtrado/carga de presets desde el navegador grafico, redimensionado/DPI,
+foco y eventos de teclado
+recibidos del host, guardado/restauracion en FL Studio y funcionamiento
+del instalador/desinstalador. La logica de teclado y el codec se probaron
+aislados, sin sustituir estas comprobaciones. No hay firma digital.
+No se ha ejecutado CTest porque CMake no esta instalado; las suites actuales
+se compilaron y ejecutaron directamente con g++.

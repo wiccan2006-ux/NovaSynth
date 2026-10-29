@@ -1,0 +1,26 @@
+name: Core smoke tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Compile selected core tests
+        run: |
+          mkdir -p build-ci
+          for test in ProductionTests SequenceTests PreviewTests; do
+            g++ -std=c++17 -O2 -I Source "Tests/${test}.cpp" -o "build-ci/${test}"
+          done
+      - name: Run selected core tests
+        run: |
+          ./build-ci/ProductionTests
+          ./build-ci/SequenceTests
+          ./build-ci/PreviewTests
