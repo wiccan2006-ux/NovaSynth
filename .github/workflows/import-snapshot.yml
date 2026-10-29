@@ -1,0 +1,31 @@
+name: Import original snapshot (manual, one-time)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Import verified source snapshot and preserve history
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "bf8504060f5fa7c62709b1bd1b3751c3c24204da36d3e34241f4d1f8a56e90dc  NovaSynth.bundle" | sha256sum -c -
+          git bundle verify NovaSynth.bundle
+          git fetch ./NovaSynth.bundle main:refs/remotes/snapshot/main
+          test "$(git rev-parse refs/remotes/snapshot/main)" = b2b621030c19440b34276454164b1b28a7677d4a
+          git fetch ./NovaSynth.bundle refs/tags/v0.17-snapshot:refs/tags/v0.17-snapshot
+          git config user.name "Nova Synth Import"
+          git config user.email "snapshot@novasynth.invalid"
+          if ! git merge-base --is-ancestor refs/remotes/snapshot/main HEAD; then
+            git merge --strategy=ours --no-commit --allow-unrelated-histories refs/remotes/snapshot/main
+            git checkout refs/remotes/snapshot/main -- .
+            git commit -m "Importar fuentes completas de 0.17 conservando el historial original"
+            git push origin HEAD:main
+          fi
+          git push origin refs/tags/v0.17-snapshot
