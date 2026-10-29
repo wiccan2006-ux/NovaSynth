@@ -1,0 +1,17 @@
+{
+  "model": "NovaSeed 1",
+  "architecture": [
+    155,
+    96,
+    64,
+    30
+  ],
+  "training_source": "Procedural Nova Synth presets with randomized controls; no real instrument recordings",
+  "rows": 6144,
+  "training_rows": 5120,
+  "held_out_rows": 1024,
+  "iterations": 133,
+  "held_out_parameter_mse": 0.013982715085148811,
+  "mean_parameter_baseline_mse": 0.03538086637854576,
+  "limitations": "Parameter error is not perceptual audio accuracy. No actual instrument identification or measured real-instrument fidelity. Ambiguous inverse problem; predictions are seeds evaluated by audio search."
+}

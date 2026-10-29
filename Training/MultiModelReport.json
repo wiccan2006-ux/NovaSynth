@@ -1,0 +1,59 @@
+{
+  "model": "NovaSeed Multi 1",
+  "rows": 8192,
+  "training_rows": 7021,
+  "held_out_rows": 1171,
+  "engines": [
+    "FM/subtractive",
+    "Procedural wavetable",
+    "Plucked waveguide",
+    "Blown resonator waveguide"
+  ],
+  "training_source": "Original procedural audio only. No real instrument recordings. No pretrained external model.",
+  "regression_architecture": [
+    159,
+    80,
+    48,
+    30
+  ],
+  "classifier_architecture": [
+    155,
+    48,
+    4
+  ],
+  "iterations": [
+    180,
+    40
+  ],
+  "held_out_parameter_mse": 0.010273309424519539,
+  "engine_accuracy_synthetic": 0.860802732707088,
+  "confusion_matrix": [
+    [
+      214,
+      77,
+      2,
+      0
+    ],
+    [
+      82,
+      208,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      293,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      293
+    ]
+  ],
+  "limitations": "Synthetic holdout metrics are not real-instrument recognition or perceptual fidelity. Proposed parameters and engine priority must be evaluated by rendering. Physical models are simplified.",
+  "regressor_max_iter": 180,
+  "regressor_converged_before_limit": false
+}

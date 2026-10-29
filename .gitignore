@@ -1,0 +1,17 @@
+/build/
+/build-*/
+/artifacts/
+/dist/
+/out/
+/.vs/
+/.idea/
+/.vscode/
+**/__pycache__/
+*.pyc
+*.pyo
+*.user
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example

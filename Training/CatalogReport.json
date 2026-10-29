@@ -1,0 +1,20 @@
+{
+  "presets": 812,
+  "representatives": 192,
+  "variants": 620,
+  "conditions": "22050 Hz, gate max(1 s, attack+.6 s) + .8 s tail, solo velocity .8; major triad velocity .65; octave-up triad velocity 1 for peak cap; MIDI40 bass, 60 others",
+  "calibration": "combined stereo RMS target .07; measured peak cap .70; trim -12..36 dB; no LUFS/true peak claim",
+  "median_gain_db": 17.436840167051766,
+  "range_gain_db": [
+    3.707552984145974,
+    36
+  ],
+  "before_rms_db_range": [
+    -63.69135409833287,
+    -30.36790874165494
+  ],
+  "after_rms_db_range": [
+    -36.73995076122377,
+    -23.195689445376257
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "version": "0.17.0-beta",
+  "original_source_archive_sha256": "0163636d1ac52b8518ec4cffa0055c0377927f3b1db6c430fef68f026fd40f25",
+  "release_artifacts": {
+    "Nova Synth.vst3/Contents/x86_64-win/.Nova Synth.vst3.cWkiT8": {
+      "bytes": 3407872,
+      "sha256": "6cd51d18cfcd2407bdc41c63dc59238c20e833bfe644b262edb6f1e9229912ac"
+    },
+    "Nova Synth.vst3/Contents/x86_64-win/Nova Synth.vst3": {
+      "bytes": 11641856,
+      "sha256": "2fd0fead64323e35f26462a0a757262603c6b8396d1b7f0f0fdda2a366b32123"
+    },
+    "Nova Synth.vst3/Contents/x86_64-win/Nova Synth.vst3.tmp343bffe": {
+      "bytes": 10896896,
+      "sha256": "a0dd2c46c7a516ae48a016c547dc3a80ac68ad56526059b6b8e8de7d02346c9f"
+    },
+    "NovaSynth_0.17_Codigo_Fuente_Completo.zip": {
+      "bytes": 23456583,
+      "sha256": "0163636d1ac52b8518ec4cffa0055c0377927f3b1db6c430fef68f026fd40f25"
+    },
+    "NovaSynth_Instalar_Windows_x64.exe": {
+      "bytes": 35435008,
+      "sha256": "5623b9b22e527f04f7b281128dd34b7ab3dff9e23dd4a8e8b6cc4fbbb6d9fc52"
+    }
+  },
+  "source_origin": "RCDATA104 from the published 0.17 installer",
+  "git_history_origin": "One initial source snapshot, no retroactive commits",
+  "remote_created": false
+}
