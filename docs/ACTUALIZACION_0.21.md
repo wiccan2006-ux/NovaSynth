@@ -15,5 +15,9 @@ Se conservan 812 IDs, orden de parametros, motores, bancos, pesos neuronales y
 compatibilidad con proyectos anteriores. No se modifica el motor de recreacion ni
 se promete identificacion universal. La muestra real del usuario sigue pendiente.
 
-Validacion: ejecutar pruebas nativas de interfaz/estado/AudioProcessor y compilar
-Windows antes de publicar. La prueba dentro de FL Studio sigue pendiente.
+Validacion aprobada: Actions 41089733181 compila Windows/MSVC y ejecuta 9 pruebas
+DSP, AudioProcessor (3 frecuencias x 5 programas, delta 0 entre bloques 64/512) y
+recorrido nativo de interfaz. Incluye migracion, recientes corruptos/duplicados,
+favoritos, filtros vacios y limpiar sin cambiar el instrumento. Capturas revisadas.
+EXE/ZIP, recursos VST3/fuentes, version y SHA256 verificados. La prueba dentro de
+FL Studio sigue pendiente.

@@ -1,7 +1,7 @@
-# Estado de trabajo 0.21
+# Estado publicado 0.21
 
 Acceso rapido a recientes/favoritos, filtros visibles y avisos globales.
-Lee ACTUALIZACION_0.21.md. Compilacion y pruebas pendientes antes de publicar.
+Lee ACTUALIZACION_0.21.md. Actions 41089733181 / commit 43650dd79a113fc1b1e1e9ce09727a1fbf5b6a60: Windows/MSVC y empaquetado SUCCESS; 9 pruebas DSP, contrato AudioProcessor y pruebas de interfaz/migracion/recientes/favoritos/filtros SUCCESS. Capturas revisadas. EXE/ZIP y recursos verificados. FL Studio interactivo sigue pendiente.
 
 # Estado publicado 0.20
 

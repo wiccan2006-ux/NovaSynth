@@ -1,6 +1,11 @@
-NOVA SYNTH 0.21 BETA — EN VALIDACION
-Navegacion, recientes/favoritos, filtros vacios y estado migrado: pruebas ampliadas.
-Resultados de compilacion y ejecucion pendientes. No validado en FL Studio.
+NOVA SYNTH 0.21 BETA — RESULTADOS VERIFICADOS
+Commit: 43650dd79a113fc1b1e1e9ce09727a1fbf5b6a60. Actions 41089733181.
+Windows 124180158565 SUCCESS; native-tests 124180158306 SUCCESS.
+9/9 DSP. AudioProcessor: 3 frecuencias x 5 programas, delta maximo 0 (bloques 64/512).
+Interfaz, migracion, recientes limitados/unicos y guardados, favoritos directos,
+filtros vacios y limpiar sin reemplazar el instrumento: PASS. Capturas revisadas.
+EXE PE64, manifest/version 0.21.0.0, recursos DLL y fuentes identicos a la distribucion,
+fuentes GPL/JUCE, ZIP del EXE y SHA256: PASS. Prueba interactiva en FL Studio pendiente.
 
 NOVA SYNTH 0.20 BETA — RESULTADOS VERIFICADOS
 Commit compilado: 2e3c83d3adb74fdff369a62944c910928ac9f4dd
