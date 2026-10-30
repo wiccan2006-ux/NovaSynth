@@ -1,0 +1,21 @@
+{
+  "source": "Tests/ExhaustiveSearchTests.cpp",
+  "synthetic_only": true,
+  "perceptual_accuracy_claim": false,
+  "cases": [
+    {
+      "engine": 0,
+      "baseline_trials": 1200,
+      "exhaustive_trials": 3600,
+      "baseline_loss": 0.115941,
+      "exhaustive_loss": 0.0939971
+    },
+    {
+      "engine": 3,
+      "baseline_trials": 1200,
+      "exhaustive_trials": 3600,
+      "baseline_loss": 0.13402,
+      "exhaustive_loss": 0.131316
+    }
+  ]
+}

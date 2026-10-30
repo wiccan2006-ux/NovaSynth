@@ -1,5 +1,14 @@
-0.22 EN VALIDACION — servicio experimental CPU, no GPU ni nuevo entrenamiento.
-Pruebas HTTP, compatibilidad, audio y GUI pendientes. FL Studio pendiente.
+NOVA SYNTH 0.22 — VALIDACION LOCAL
+Windows x64: LLVM-MinGW 20250114, JUCE 7.0.12 sin cambios; compilacion cruzada PASS.
+Linux g++ 13.3.0: 10/10 DSP/recreacion PASS. Comparacion Profunda/Exhaustiva: dos
+casos sinteticos mejoran la distancia interna; no es una medida perceptual universal.
+AudioProcessor: 3 frecuencias x 5 programas; delta maximo 0 al exportar 64/512.
+Interfaz real: navegacion, menu Exhaustiva 3600 y cancelar configuracion del servidor PASS.
+HTTP real plugin -> servicio -> worker -> sintesis editable, afinacion, deshacer y
+credenciales no serializadas: PASS. HTTP autenticacion/audio invalido/tamano/ocupado: PASS.
+GitHub Actions queda en cola; no se afirma validacion MSVC. Empaquetado aun pendiente.
+No hay servidor publico, GPU, nueva red entrenada ni prueba directa en FL Studio.
+Ver Training/CloudPrototypeValidation.json y CloudPrototypeBenchmark.json.
 
 NOVA SYNTH 0.21 BETA — RESULTADOS VERIFICADOS
 Commit: 43650dd79a113fc1b1e1e9ce09727a1fbf5b6a60. Actions 41089733181.

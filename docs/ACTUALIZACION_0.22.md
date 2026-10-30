@@ -19,3 +19,9 @@ la totalidad de la arquitectura propuesta. Separacion de mezclas, entrenamiento
 nuevo, GPU y evaluacion auditiva con instrumentos reales siguen pendientes.
 
 Conserva IDs/812 programas y JUCE 7.0.12. FL Studio interactivo pendiente.
+
+Validacion local: 10/10 DSP y recreacion; AudioProcessor a tres frecuencias y cinco
+programas, delta 0 en bloques 64/512; GUI (menu Exhaustiva y cancelar configuracion),
+HTTP real con worker, afinacion y deshacer aprobados. Compilacion cruzada Windows
+aprobada. Actions no aporta resultado en esta sesion; prueba FL Studio pendiente.
+Datos y medidas sinteticas en Training/CloudPrototype*.json.
