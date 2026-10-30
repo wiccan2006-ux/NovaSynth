@@ -40,9 +40,9 @@
 #define JucePlugin_WantsMidiInput 1
 #define JucePlugin_ProducesMidiOutput 0
 #define JucePlugin_EditorRequiresKeyboardFocus 1
-#define JucePlugin_Version 0x001500
-#define JucePlugin_VersionCode 0x001500
-#define JucePlugin_VersionString "0.21.0"
+#define JucePlugin_Version 0x001600
+#define JucePlugin_VersionCode 0x001600
+#define JucePlugin_VersionString "0.22.0"
 #define JucePlugin_VSTUniqueID JucePlugin_PluginCode
 #define JucePlugin_VstCategory 2
 #define JucePlugin_Vst3Category "Instrument|Synth"

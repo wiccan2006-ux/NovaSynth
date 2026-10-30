@@ -1,0 +1,5 @@
+#define NOVA_TEST_LIBRARY 1
+#include "Processor.h"
+#include <iostream>
+juce::AudioProcessorEditor* NovaProcessor::createEditor(){return nullptr;}
+int main(int argc,char** argv){try{if(argc!=4)throw std::runtime_error("worker input.wav output.json budget");juce::ScopedJuceInitialiser_GUI gui;NovaProcessor p;p.quality.store(std::clamp(std::stoi(argv[3]),160,4800));p.cleanPitch.store(true);p.useNeural.store(true);auto pump=[](){juce::MessageManager::getInstance()->runDispatchLoopUntil(20);};if(!p.loadSample(juce::File(argv[1])))throw std::runtime_error("Cannot load reference");while(p.loading.load())pump();if(!p.hasReference())throw std::runtime_error(p.status().toStdString());auto duration=p.sourceView()->duration;p.selectRange({0,std::min(60.,duration)});if(!p.startFit())throw std::runtime_error("Cannot start fit");while(p.fitting.load())pump();if(p.program.load()!=-1||p.alternativeNames().isEmpty())throw std::runtime_error(p.status().toStdString());if(!juce::File(argv[2]).replaceWithText(p.exportRemoteCandidates()))throw std::runtime_error("Cannot write result");return 0;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}

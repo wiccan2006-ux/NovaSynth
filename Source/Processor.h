@@ -17,6 +17,7 @@
 #include "WorkflowTools.h"
 #include "PersonalLibrary.h"
 #include "RecreationSearch.h"
+#include "CloudProtocol.h"
 #include <atomic>
 #include <memory>
 #include <thread>
@@ -41,6 +42,7 @@ public:
     std::atomic<bool> resetPresetAudio{false};std::atomic<bool> panicRequested{false},arpEnabled{false};std::atomic<float> arpBpm{120};std::array<std::atomic<int>,nova::arpSteps> arpNotes{};
     void resetArpPattern(){for(auto& n:arpNotes)n.store(nova::arpRest);}
 #include "WorkflowMethods.h"
+#include "CloudMethods.h"
 
     juce::StringArray versionNames()const{const juce::ScopedLock lock(metadataLock);juce::StringArray names;for(const auto& v:versions)names.add(v.name);return names;}
     void saveVersion(juce::String name={}){if(fitting.load()||loading.load())return;captureVersion(name.isEmpty()?"Guardado manual":name);say("Version guardada. Maximo 12; al llenarse se reemplaza la mas antigua. Se guarda con el proyecto/preset.");}
@@ -203,7 +205,7 @@ public:
     bool startFit(){
         const juce::ScopedLock lock(jobLock);if(fitting.load()||loading.load())return false;
         std::shared_ptr<const nova::Sound> sound;std::shared_ptr<const ReferenceFile> file;nova::SelectionRange range;{const juce::ScopedLock meta(metadataLock);sound=reference;file=referenceFile;range=selection;}
-        if(file)return startContextFit(file,range);
+        if(file&&remoteEnabled.load())return startRemoteFit(file,range);if(file)return startContextFit(file,range);
         if(!file&&(!sound || sound->left.empty())){say("Arrastra una nota aislada para iniciar la busqueda.");return false;}
         stopReference();if(worker.joinable())worker.join();pendingContext.reset();pendingBank.reset();pendingArp={};refinementJob=reviewLearningJob=false;analysisStage.store(0);cancel.store(false);done.store(false);fitting.store(true);fitProgress.store(0);fitTrials.store(0);auto initial=params();int budget=quality.load();bool neural=useNeural.load(),clean=cleanPitch.load();
         say("Buscando controles de sintesis y efectos. La muestra es solo una referencia.");

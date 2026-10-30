@@ -1,3 +1,10 @@
+# NOVA SYNTH 0.22 BETA
+
+Recrear > Detalles y opciones > Exhaustiva / 3600: mas busqueda en este equipo.
+Usar servidor es opcional y requiere un servicio Nova desplegado; no hay servidor
+publico incluido. Configura direccion/clave, activa y confirma cada envio.
+Consulta docs/ACTUALIZACION_0.22.md para alcance y limites.
+
 # NOVA SYNTH 0.21 BETA
 
 Recientes / favoritos carga un sonido del banco directamente; Favorito marca el actual.

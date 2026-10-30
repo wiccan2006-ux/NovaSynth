@@ -1,3 +1,8 @@
+# 0.22 en validacion
+
+Busqueda exhaustiva y servicio CPU experimental; servidor publico/GPU no desplegado.
+No hay entrenamiento neuronal nuevo. Lee ACTUALIZACION_0.22.md.
+
 # Estado publicado 0.21
 
 Acceso rapido a recientes/favoritos, filtros visibles y avisos globales.

@@ -1,3 +1,6 @@
+0.22 EN VALIDACION — servicio experimental CPU, no GPU ni nuevo entrenamiento.
+Pruebas HTTP, compatibilidad, audio y GUI pendientes. FL Studio pendiente.
+
 NOVA SYNTH 0.21 BETA — RESULTADOS VERIFICADOS
 Commit: 43650dd79a113fc1b1e1e9ce09727a1fbf5b6a60. Actions 41089733181.
 Windows 124180158565 SUCCESS; native-tests 124180158306 SUCCESS.
