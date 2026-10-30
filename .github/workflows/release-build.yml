@@ -43,7 +43,7 @@ jobs:
       - name: Run selected DSP and recreation tests
         run: ctest --test-dir build-native -R '^(quality_tests|level_tests|recreation_workflow_tests|production_tests|sequence_tests|preview_tests|tuning_tests|context_tests|assistant_tests)$' --output-on-failure
       - name: Validate state, automation and offline audio contract
-        run: xvfb-run -a build-native/host_contract_tests
+        run: python3 Packaging/run_editor_tests.py build-native/host_contract_tests build-native/host-contract
       - name: Exercise UI, library, migration and recreation
         run: python3 Packaging/run_editor_tests.py build-native/editor_integration_tests build-native/screens
       - uses: actions/upload-artifact@v4
