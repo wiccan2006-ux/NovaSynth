@@ -1,0 +1,44 @@
+{
+  "version": "0.22.0",
+  "source_commit": "fde96c6fae030b773673bbf3fc602fc56cabba1d",
+  "checks": "PASS: PE64, manifest/version, exact embedded VST3 and full sources, unique ZIP paths, EXE ZIP, SHA256",
+  "compiler": "LLVM-MinGW 20250114 cross compilation",
+  "source_files": 3735,
+  "dll_bytes": 12076544,
+  "files": [
+    {
+      "name": "NovaSynth_0.22_Codigo_Fuente_Completo.zip",
+      "bytes": 23943003,
+      "sha256": "5cf3587c0181cf3fd63a70fcff61f41c1c5515c76e22de74a8a4506973921d3e"
+    },
+    {
+      "name": "NovaSynth_0.22_Instalador.zip",
+      "bytes": 27435490,
+      "sha256": "c038be874b451c30c07c1eeec8052f19f09c2935df7f2a4f5a2fbc84167fee7e"
+    },
+    {
+      "name": "NovaSynth_0.22_Instalar_Windows_x64.exe",
+      "bytes": 36366336,
+      "sha256": "df10cda65f1aee5d941d72413d012226e3b6a6928eb8765e9a98e01fba1d5d80"
+    },
+    {
+      "name": "NovaSynth_0.22_VST3_Portable.zip",
+      "bytes": 4156338,
+      "sha256": "75594a0794c970f368103dc66d81047f95fe57d91c9ab7438dbb766113d90971"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 409,
+      "sha256": "75dd86984bde8c86ae5aab3054027e41feb579d52fe8fb83efde4c936bf0d349"
+    }
+  ],
+  "release": "https://github.com/wiccan2006-ux/NovaSynth/releases/tag/v0.22.0-beta",
+  "validation": "10/10 DSP; AudioProcessor 3 rates x 5 programs, worst 64/512 delta 0; native editor/exhaustive UI; real HTTP plugin/worker roundtrip and undo PASS",
+  "github_actions": "Queued/unavailable during delivery. Windows cross build and local tests used instead.",
+  "public_endpoint": null,
+  "new_neural_training": false,
+  "gpu": false,
+  "fl_studio_validated": false,
+  "installer_library_file_id": "libfile_03e0813d0bc081918cc567059fbbd68d",
+  "zip_library_file_id": "libfile_1044552f514c8191b98189f2c26795d2"
+}

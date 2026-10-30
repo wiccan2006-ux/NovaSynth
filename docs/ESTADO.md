@@ -1,7 +1,7 @@
-# 0.22: prototipo validado localmente
+# Estado publicado 0.22: prototipo validado localmente
 
 Busqueda exhaustiva y servicio CPU experimental; servidor publico/GPU no desplegado.
-No hay entrenamiento neuronal nuevo. Lee ACTUALIZACION_0.22.md. Compilacion cruzada Windows y pruebas locales: 10/10 DSP, AudioProcessor, GUI y HTTP real PASS. Actions sigue en cola. Empaquetado pendiente; FL Studio interactivo pendiente.
+No hay entrenamiento neuronal nuevo. Lee ACTUALIZACION_0.22.md. Compilacion cruzada Windows y pruebas locales: 10/10 DSP, AudioProcessor, GUI y HTTP real PASS. Actions sigue en cola. EXE/ZIP, recursos exactos VST3/fuentes, version/manifest y SHA256 verificados. Publicado v0.22.0-beta desde fde96c6fae030b773673bbf3fc602fc56cabba1d. FL Studio interactivo pendiente.
 
 # Estado publicado 0.21
 
