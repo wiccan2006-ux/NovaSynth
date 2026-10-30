@@ -7,7 +7,7 @@
 
 namespace nova {
 struct ContextNote {
-    SelectionRange range;int note=60;float velocity=.8f,confidence=0,rms=0;double quality=0,centsSpread=0,detuning=0;
+    SelectionRange range;int note=60;float velocity=.8f,confidence=0,rms=0;double quality=0,centsSpread=0,detuning=0;bool manual=false;
 };
 struct ContextAnalysis {
     double duration=0,usableFraction=0;int events=0,uniqueNotes=0,rejectedUnstable=0;bool cancelled=false;
