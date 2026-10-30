@@ -1,3 +1,16 @@
+NOVA SYNTH 0.20 BETA — RESULTADOS VERIFICADOS
+Commit compilado: 2e3c83d3adb74fdff369a62944c910928ac9f4dd
+Actions: 40984769831. Windows 123833096651 SUCCESS; native-tests 123833096256 SUCCESS.
+9/9 pruebas DSP. AudioProcessor: estado, automatizacion, MIDI/pedal/bend, exportacion
+por bloques a 3 frecuencias x 5 programas, delta maximo 0 en los casos probados.
+Interfaz: tres tareas y siete secciones, controles anteriores accesibles, navegacion
+sin alterar parametros, biblioteca, preferencias desplegables, migracion y versiones PASS.
+Capturas revisadas. Distribucion: SHA256, PE x64, version y fuentes completas verificados.
+No hay cambios de DSP ni banco respecto a 0.19. Ver docs/PUBLICADO_0.20.json.
+FL Studio e instalacion interactiva en Windows siguen PENDIENTES.
+
+REGISTRO AL COMPILAR / HISTORICO:
+
 NOVA SYNTH 0.20 BETA — VALIDACION EN CURSO
 Reorganizacion por tareas y preferencias de interfaz; DSP y datos de 0.19 conservados.
 Comprobar Actions del commit publicado y capturas de EditorIntegrationTests.
