@@ -6,7 +6,7 @@ AudioProcessor: 3 frecuencias x 5 programas; delta maximo 0 al exportar 64/512.
 Interfaz real: navegacion, menu Exhaustiva 3600 y cancelar configuracion del servidor PASS.
 HTTP real plugin -> servicio -> worker -> sintesis editable, afinacion, deshacer y
 credenciales no serializadas: PASS. HTTP autenticacion/audio invalido/tamano/ocupado: PASS.
-GitHub Actions queda en cola; no se afirma validacion MSVC. Empaquetado aun pendiente.
+GitHub Actions queda en cola; no se afirma validacion MSVC. Empaquetado PE64/manifest/version, recursos exactos DLL/fuentes, ZIP unico y SHA256: PASS.
 No hay servidor publico, GPU, nueva red entrenada ni prueba directa en FL Studio.
 Ver Training/CloudPrototypeValidation.json y CloudPrototypeBenchmark.json.
 
