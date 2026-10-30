@@ -1,7 +1,7 @@
 name: Build and validate Nova Synth
 on:
   push:
-    branches: [feature/intuitive-recreation-018]
+    branches: [feature/sound-quality-019]
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         with:
-          name: NovaSynth-0.18-Windows-x64
+          name: NovaSynth-0.19-Windows-x64
           path: dist/*
           if-no-files-found: error
           retention-days: 30
@@ -39,14 +39,16 @@ jobs:
       - name: Configure native component tests
         run: cmake -S . -B build-native -DJUCE_DIR="$GITHUB_WORKSPACE/ThirdParty/JUCE" -DNOVA_BUILD_GUI_TESTS=ON -DCMAKE_BUILD_TYPE=Release
       - name: Build native UI and core tests
-        run: cmake --build build-native --target editor_integration_tests recreation_workflow_tests production_tests sequence_tests preview_tests tuning_tests context_tests assistant_tests --parallel 2
+        run: cmake --build build-native --target editor_integration_tests host_contract_tests quality_tests level_tests recreation_workflow_tests production_tests sequence_tests preview_tests tuning_tests context_tests assistant_tests --parallel 2
       - name: Run selected DSP and recreation tests
-        run: ctest --test-dir build-native -R '^(recreation_workflow_tests|production_tests|sequence_tests|preview_tests|tuning_tests|context_tests|assistant_tests)$' --output-on-failure
+        run: ctest --test-dir build-native -R '^(quality_tests|level_tests|recreation_workflow_tests|production_tests|sequence_tests|preview_tests|tuning_tests|context_tests|assistant_tests)$' --output-on-failure
+      - name: Validate state, automation and offline audio contract
+        run: python3 Packaging/run_editor_tests.py build-native/host_contract_tests build-native/host-contract
       - name: Exercise UI, library, migration and recreation
         run: python3 Packaging/run_editor_tests.py build-native/editor_integration_tests build-native/screens
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: NovaSynth-0.18-UI-checks
+          name: NovaSynth-0.19-UI-checks
           path: build-native/screens/*
           retention-days: 14

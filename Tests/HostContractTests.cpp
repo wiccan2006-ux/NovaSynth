@@ -1,0 +1,14 @@
+// Exercises the AudioProcessor contract. This is not an FL Studio host test.
+#define NOVA_TEST_LIBRARY 1
+#include "Processor.h"
+#include <iostream>
+#include <stdexcept>
+juce::AudioProcessorEditor* NovaProcessor::createEditor(){return nullptr;}
+void require(bool ok,const char* why){if(!ok)throw std::runtime_error(why);}
+std::vector<float> render(NovaProcessor& p,double rate,int size){p.prepareToPlay(rate,size);std::vector<float> out;const int total=8192;for(int at=0;at<total;at+=size){int n=std::min(size,total-at);if(at==2048)p.set("cutoff",3200);if(at==4096)p.set("cutoff",8800);juce::AudioBuffer<float> b(2,n);juce::MidiBuffer midi;
+ auto event=[&](int frame,juce::MidiMessage m){if(frame>=at&&frame<at+n)midi.addEvent(m,frame-at);};
+ event(17,juce::MidiMessage::noteOn(1,60,.8f));event(701,juce::MidiMessage::noteOn(1,64,.5f));event(1400,juce::MidiMessage::controllerEvent(1,64,127));event(1900,juce::MidiMessage::noteOff(1,60));event(2701,juce::MidiMessage::pitchWheel(1,8700));event(3200,juce::MidiMessage::noteOff(1,64));event(4000,juce::MidiMessage::controllerEvent(1,64,0));event(4300,juce::MidiMessage::noteOn(1,72,1.f));event(5400,juce::MidiMessage::noteOff(1,72));event(7001,juce::MidiMessage::controllerEvent(1,123,0));p.processBlock(b,midi);require(midi.isEmpty(),"MIDI consumed");for(int i=0;i<n;++i)for(int c=0;c<2;++c){float x=b.getSample(c,i);require(std::isfinite(x)&&std::abs(x)<=1,"finite bounded export");out.push_back(x);}}
+ require(std::isfinite(p.maxAudioLoad.load()),"finite timing meter");p.releaseResources();return out;}
+int main(){try{juce::ScopedJuceInitialiser_GUI gui;double worst=0;for(double sr:{44100.,48000.,96000.})for(int program:{5,35,764,790,805}){NovaProcessor a,b;a.setCurrentProgram(program);a.set("touch",.5f);a.set("boost",-2);juce::MemoryBlock state;a.getStateInformation(state);b.setStateInformation(state.getData(),static_cast<int>(state.getSize()));require(std::abs(b.v("touch")-.5f)<.001&&b.program.load()==program,"state/automation roundtrip");auto x=render(a,sr,64),y=render(b,sr,512);require(x.size()==y.size(),"render lengths");double energy=0;for(size_t i=0;i<x.size();++i){worst=std::max(worst,static_cast<double>(std::abs(x[i]-y[i])));energy+=x[i]*x[i];}require(energy>1e-7,"audible output");require(worst<.00003,"same offline export across host block sizes");a.prepareToPlay(sr,1024);juce::AudioBuffer<float> empty(2,0);juce::MidiBuffer m;a.processBlock(empty,m);a.panic();juce::AudioBuffer<float> block(2,1024);a.processBlock(block,m);require(block.getMagnitude(0,1024)<1e-6,"panic clears sustained voices and FX");}
+ std::cout<<"PASS: 3 rates x 5 programs, state restoration, sample-accurate MIDI/pedal/bend, automation, offline export 64 vs 512, panic; worst delta "<<worst<<". FL Studio remains unvalidated.\n";
+}catch(const std::exception& e){std::cerr<<"FAIL: "<<e.what()<<'\n';return 1;}}

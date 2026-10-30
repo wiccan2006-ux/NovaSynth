@@ -1,0 +1,28 @@
+{
+  "version": "0.19",
+  "presets": 812,
+  "representatives": 192,
+  "variants": 620,
+  "renders": 6496,
+  "rate": 22050,
+  "gate": "max(1, attack+.6) seconds; .8s tail",
+  "conditions": "solo -12/0/+12 semitones at velocity .8; solo .35/.6; triads .8 and octave-up 1 (last condition repeats octave-up)",
+  "level": "38Hz highpass, +4dB high shelf at 1500Hz, 100ms blocks gated at -30dB relative energy. Proxy, not LUFS. Geometric mean of 3 registers; shared target .07; central stereo RMS cap .07; peak cap .70 across all tested conditions",
+  "curation": "normalized spectral/envelope/attack/width features averaged over 3 registers. Role-preserving farthest-point selection stops below .035 or at 192; 48 Signature anchors retained",
+  "peak_limited_presets": 546,
+  "gain_db_range": [
+    3.707561046464909,
+    36
+  ],
+  "weighted_db_range": [
+    -34.3486550460452,
+    -23.098039199714858
+  ],
+  "weighted_db_percentiles_10_50_90": [
+    -26.76150196606899,
+    -23.84358938496223,
+    -23.09803919971486
+  ],
+  "fl_studio_tested": false,
+  "human_listening_completed": false
+}

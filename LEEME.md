@@ -1,3 +1,31 @@
+# Nova Synth 0.19 beta — Sonido y confianza
+
+Desarrollador: **Eleander Sanchez (Bodby Olwen)**.
+
+Cierra FL Studio y ejecuta NovaSynth_0.19_Instalar_Windows_x64.exe. Escanea plugins y
+comprueba v0.19. Las fuentes completas y licencias acompanian el instalador.
+
+- Banco: seleccion principal revisada con medidas en tres registros y nueva compensacion
+  ponderada de nivel. Desmarca Solo principales para ver los 812 programas originales.
+  Algunos sonidos mantienen menor nivel para respetar sus transitorios y el margen de acordes.
+- Simple/Tocar: Expresividad controla la respuesta a velocidad, ataque, brillo y salida.
+  Cero conserva articulacion fija; no agrega vibrato ni desafinacion aleatoria.
+- Recrear: el informe muestra ataque/cuerpo/caida y cuantas notas pudo afinar de forma fiable.
+  Si hay mezcla, abre Revisar, escucha las regiones y elige las del instrumento que te interesa.
+- Mejorar segun mi oido: nueva opcion Demasiados efectos; los resultados aceptados conservan
+  versiones y se pueden deshacer. Comparar A/B ayuda a decidir por el oido.
+- Audio en el pie indica el tiempo de proceso frente a duracion del bloque; GR muestra la
+  reduccion del protector. No es el porcentaje de CPU total del ordenador.
+
+Conserva IDs y programas. Los valores de proyectos/presets anteriores se restauran;
+la nueva calibracion se aplica al cargar programas de fabrica, no sobre sus valores guardados.
+No hay nueva red entrenada con instrumentos reales, separacion de mezclas ni copia perfecta.
+La compilacion automatica no sustituye probar el plugin dentro de FL Studio.
+
+Detalle tecnico y limites: docs/ACTUALIZACION_0.19.md. Prueba manual: docs/PRUEBA_FL_STUDIO.md.
+
+---
+
 # Nova Synth 0.18 beta — Explorar, guardar y recrear
 
 Desarrollador: **Eleander Sanchez (Bodby Olwen)**.

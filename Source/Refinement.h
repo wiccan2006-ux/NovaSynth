@@ -2,7 +2,7 @@
 #include "Diagnostics.h"
 #include <random>
 namespace nova {
-enum class RefineGoal { balanced,attack,body,lessMetallic,brighter,darker,shorterTail };
+enum class RefineGoal { balanced,attack,body,lessMetallic,brighter,darker,shorterTail,lessEffects };
 struct RefineExample {FitTarget target;float velocity=.8f;};
 struct RefineMetrics {double attack=0,body=0,tail=0,overall=0,metallic=0,brightnessDelta=0;};
 struct RefinementReport {RefineGoal goal=RefineGoal::balanced;FitReport fit;RefineMetrics before,after;double objectiveBefore=0,objectiveAfter=0;int examples=0;};
@@ -45,12 +45,14 @@ inline RefinementReport refineInstrument(const std::vector<RefineExample>& examp
         if(!valid){if(!cancel.load()){++out.fit.trials;if(progress)progress(out.fit.trials,budget,best);}return;}
         for(double* x:{&metrics.attack,&metrics.body,&metrics.tail,&metrics.overall,&metrics.metallic,&metrics.brightnessDelta})*x/=targets.size();
         double loss=refinementObjective(metrics,goal);
+        if(goal==RefineGoal::lessEffects)loss+=.3*((p.reverbOn?p.reverb:0)+(p.delayOn?p.delay:0)+(p.chorusOn?p.chorus:0))+.12*(p.driveOn?p.drive:0);
         if(out.fit.trials==0){out.before=metrics;out.objectiveBefore=loss;}
         bool preservesBody=goal!=RefineGoal::body||metrics.body<=out.before.body+1e-7;
+        if(goal==RefineGoal::lessEffects)preservesBody=preservesBody&&p.reverb<=initial.reverb&&p.delay<=initial.delay&&p.chorus<=initial.chorus&&p.drive<=initial.drive;
         if(preservesBody&&loss<best){best=loss;winner=p;winnerMetrics=metrics;winnerGain=std::exp(gains/targets.size());}
         ++out.fit.trials;if(progress)progress(out.fit.trials,budget,best);
     };
-    evaluate(initial);std::mt19937 random(0x4e533134);std::normal_distribution<float> normal(0,1);
+    evaluate(initial);if(goal==RefineGoal::lessEffects){auto dry=initial;dry.reverb*=.4f;dry.delay*=.4f;dry.chorus*=.5f;dry.drive*=.6f;evaluate(dry);}std::mt19937 random(0x4e533134);std::normal_distribution<float> normal(0,1);
     while(out.fit.trials<budget&&!cancel.load()&&best<1e8){Params p=winner;float change=normal(random)*(.18f*(1.f-out.fit.trials/static_cast<float>(budget))+.025f);int control=random()%16;
         if(control==0)p.attack=std::clamp(p.attack*std::exp(change*3),.001f,3.f);
         if(control==1)p.decay=std::clamp(p.decay*std::exp(change*3),.005f,3.f);

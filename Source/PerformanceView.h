@@ -2,18 +2,20 @@
 #include "Processor.h"
 #include "GlassStyle.h"
 class PerformanceView final:public juce::Component {
-    NovaProcessor& p;std::array<juce::Slider,4> macros;std::array<juce::Label,4> labels;std::array<std::unique_ptr<NovaProcessor::State::SliderAttachment>,4> bindings;
+    NovaProcessor& p;juce::Slider touch;std::unique_ptr<NovaProcessor::State::SliderAttachment> touchBinding;std::array<juce::Slider,4> macros;std::array<juce::Label,4> labels;std::array<std::unique_ptr<NovaProcessor::State::SliderAttachment>,4> bindings;
 public:
     juce::Colour accent{0xff40a9ff};explicit PerformanceView(NovaProcessor& owner):p(owner){
+        addAndMakeVisible(touch);touch.setName("performanceTouch");touch.setSliderStyle(juce::Slider::LinearHorizontal);touch.setTextBoxStyle(juce::Slider::TextBoxRight,false,52,24);touch.setWantsKeyboardFocus(false);touch.setDoubleClickReturnValue(true,0);touch.setTooltip("Expresividad: velocidad MIDI cambia ataque, brillo, salida y fase inicial. No agrega desafinacion. Cero conserva la articulacion fija.");touch.onDragStart=[this]{p.beginControlEdit();};touchBinding=std::make_unique<NovaProcessor::State::SliderAttachment>(p.state,"touch",touch);
         const char* ids[]={"character","brightness","movement","space"};const char* names[]={"Caracter","Brillo","Movimiento","Espacio"};const char* help[]={"Cambia la densidad armonica y la saturacion. No cambia la afinacion.","Abre el filtro hasta tres octavas, sin cambiar la nota.","Modula el filtro y, en wavetable, el espectro y la anchura. Sin vibrato de tono.","Aumenta delay y reverb. Respeta los interruptores de los efectos."};
         for(int i=0;i<4;++i){auto& m=macros[i];m.setName(ids[i]);addAndMakeVisible(m);addAndMakeVisible(labels[i]);m.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);m.setTextBoxStyle(juce::Slider::TextBoxBelow,false,90,24);m.setNumDecimalPlacesToDisplay(2);m.setDoubleClickReturnValue(true,0);m.setTooltip(help[i]);m.setWantsKeyboardFocus(false);m.onDragStart=[this]{p.beginControlEdit();};labels[i].setText(names[i],juce::dontSendNotification);labels[i].setJustificationType(juce::Justification::centred);bindings[i]=std::make_unique<NovaProcessor::State::SliderAttachment>(p.state,ids[i],m);}
     }
-    void resized()override{for(int i=0;i<4;++i){int x=i*getWidth()/4;labels[i].setBounds(x+10,102,getWidth()/4-20,28);macros[i].setBounds(x+26,132,getWidth()/4-52,getHeight()-166);}}
-    void refresh(){for(auto& l:labels)l.setFont(16*p.textScale());repaint();}
+    void resized()override{touch.setBounds(getWidth()-300,20,276,28);for(int i=0;i<4;++i){int x=i*getWidth()/4;labels[i].setBounds(x+10,102,getWidth()/4-20,28);macros[i].setBounds(x+26,132,getWidth()/4-52,getHeight()-166);}}
+    void refresh(){int e=static_cast<int>(p.v("synthengine"));labels[0].setText(e==3?"Pulsacion":e==4?"Saturacion":e==1?"Textura":"Caracter",juce::dontSendNotification);for(auto& l:labels)l.setFont(16*p.textScale());repaint();}
     void paint(juce::Graphics& g)override{
         auto area=getLocalBounds().toFloat();nova::glass::panel(g,area,accent,26,this);int program=p.program.load();g.setFont(23.f);g.setColour(juce::Colours::white);g.drawFittedText(p.patchTitle(),22,16,450,36,juce::Justification::centredLeft,1);
+        g.setFont(12.f*p.textScale());g.setColour(accent);g.drawText("EXPRESIVIDAD",getWidth()-430,20,125,28,juce::Justification::centredRight);
         g.setFont(13.f*p.textScale());g.setColour(juce::Colour(0xffc4d1e2));g.drawFittedText(program>=nova::signaturePresetStart?juce::String(nova::signaturePatches()[program-nova::signaturePresetStart].description):"Explora el sonido con cuatro gestos. Elige Avanzada para editar cada parametro.",22,62,getWidth()-44,34,juce::Justification::centredLeft,2);
-        const char* captions[]={"ARMONICOS / DENSIDAD","APERTURA DEL FILTRO","EVOLUCION / ESTEREO","DELAY / REVERB"};for(int i=0;i<4;++i){auto box=juce::Rectangle<float>(i*getWidth()/4.f+8,100,getWidth()/4.f-16,getHeight()-108.f);g.setColour(juce::Colours::white.withAlpha(.025f));g.fillRoundedRectangle(box,20);g.setColour(accent.withAlpha(.8f));g.setFont(10.5f);g.drawText(captions[i],static_cast<int>(box.getX()),getHeight()-20,static_cast<int>(box.getWidth()),16,juce::Justification::centred);}
+        const char* captions[]={"ARMONICOS / DENSIDAD","APERTURA DEL FILTRO","EVOLUCION / ESTEREO","DELAY / REVERB"};for(int i=0;i<4;++i){auto box=juce::Rectangle<float>(i*getWidth()/4.f+8,100,getWidth()/4.f-16,getHeight()-108.f);g.setColour(juce::Colour(0xff07101c).withAlpha(.56f));g.fillRoundedRectangle(box,20);g.setColour(accent.withAlpha(.8f));g.setFont(10.5f);g.drawText(captions[i],static_cast<int>(box.getX()),getHeight()-20,static_cast<int>(box.getWidth()),16,juce::Justification::centred);}
     }
 };
 class AppearanceView final:public juce::Component {

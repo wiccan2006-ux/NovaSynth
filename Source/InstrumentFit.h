@@ -3,7 +3,7 @@
 #include "MultiNeural.h"
 namespace nova {
 inline const char* engineName(int id){static constexpr const char* names[]={"FM / subtractive","Parciales + ruido","Wavetable procedural","Cuerda / guia de ondas","Soplo / resonador"};return names[std::clamp(id,0,4)];}
-struct InstrumentCandidate {Params parameters;std::shared_ptr<SpectralModel> model;std::shared_ptr<ZoneBank> bank;std::string label;double error=1e9,rms=0,pitchErrorCents=0;bool valid=false,pitchMeasured=false;};
+struct InstrumentCandidate {Params parameters;std::shared_ptr<SpectralModel> model;std::shared_ptr<ZoneBank> bank;std::string label;double error=1e9,rms=0,pitchErrorCents=0;int pitchChecks=0,tonalReferences=0;double attackDistance=0,bodyDistance=0,tailDistance=0;bool valid=false,pitchMeasured=false;};
 struct InstrumentReport {
  std::array<InstrumentCandidate,5> candidates{};
  FitReport fit;std::array<double,5> engineErrors{1e9,1e9,1e9,1e9,1e9};std::array<double,4> stageErrors{};bool multiNeuralUsed=false;

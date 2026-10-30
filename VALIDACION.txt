@@ -1,3 +1,12 @@
+NOVA SYNTH 0.19 BETA — VALIDACION EN CURSO
+Mediciones reproducibles: Training/QualityMeasurements.json y QualityReport.json.
+Ver docs/ACTUALIZACION_0.19.md para pruebas y limites.
+Resultados del instalador y CI: consultar ejecucion correspondiente al commit publicado.
+FL Studio/Windows en una maquina de usuario y escucha humana de referencias reales: PENDIENTES.
+No se certifica LUFS, true peak, copia exacta, identificacion ni separacion de instrumentos.
+
+REGISTRO HISTORICO:
+
 NOVA SYNTH 0.18 BETA — VALIDACION EN CURSO
 Fuentes reconstruidas sobre el snapshot original 0.17 tras restauracion del entorno.
 La rama de trabajo conserva los cambios antes de publicar la version.
