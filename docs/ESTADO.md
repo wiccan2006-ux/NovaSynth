@@ -1,3 +1,8 @@
+# Estado de trabajo 0.21
+
+Acceso rapido a recientes/favoritos, filtros visibles y avisos globales.
+Lee ACTUALIZACION_0.21.md. Compilacion y pruebas pendientes antes de publicar.
+
 # Estado publicado 0.20
 
 Interfaz reorganizada por tareas. Leer ACTUALIZACION_0.20.md. Conserva las funciones,

@@ -1,3 +1,10 @@
+# NOVA SYNTH 0.21 BETA
+
+Recientes / favoritos carga un sonido del banco directamente; Favorito marca el actual.
+Recientes guarda hasta 12 sonidos con tu proyecto. Explorar muestra los filtros
+activos y permite limpiarlos sin cambiar el sonido. Ver aviso abre el mensaje
+completo al guardar, cargar o terminar una tarea. Las funciones anteriores se conservan.
+
 # Nova Synth 0.20 beta — Menos a la vista, todo a mano
 
 Eleander Sanchez (Bodby Olwen).
