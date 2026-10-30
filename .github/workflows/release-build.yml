@@ -1,7 +1,7 @@
 name: Build and validate Nova Synth
 on:
   push:
-    branches: [feature/daily-workflow-021]
+    branches: [feature/hybrid-recreation-022]
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         with:
-          name: NovaSynth-0.21-Windows-x64
+          name: NovaSynth-0.22-Windows-x64
           path: dist/*
           if-no-files-found: error
           retention-days: 30
@@ -35,11 +35,15 @@ jobs:
         with:
           persist-credentials: false
       - name: Install test dependencies
-        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libx11-dev libxext-dev libxinerama-dev libxrandr-dev libxcursor-dev libfreetype-dev libfontconfig-dev libgl1-mesa-dev xvfb
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libx11-dev libxext-dev libxinerama-dev libxrandr-dev libxcursor-dev libfreetype-dev libfontconfig-dev libgl1-mesa-dev libcurl4-openssl-dev xvfb
       - name: Configure native component tests
         run: cmake -S . -B build-native -DJUCE_DIR="$GITHUB_WORKSPACE/ThirdParty/JUCE" -DNOVA_BUILD_GUI_TESTS=ON -DCMAKE_BUILD_TYPE=Release
       - name: Build native UI and core tests
-        run: cmake --build build-native --target editor_integration_tests host_contract_tests quality_tests level_tests recreation_workflow_tests production_tests sequence_tests preview_tests tuning_tests context_tests assistant_tests --parallel 2
+        run: cmake --build build-native --target nova_cloud_worker nova_cloud_client_test exhaustive_search_tests editor_integration_tests host_contract_tests quality_tests level_tests recreation_workflow_tests production_tests sequence_tests preview_tests tuning_tests context_tests assistant_tests --parallel 2
+      - name: Measure exhaustive search against unchanged baseline
+        run: mkdir -p build-native/cloud-checks && build-native/exhaustive_search_tests > build-native/cloud-checks/exhaustive-benchmark.json
+      - name: Service protocol and real HTTP recreation
+        run: python3 Server/test_protocol.py && xvfb-run -a python3 Server/test_service.py build-native/nova_cloud_worker build-native/cloud-checks
       - name: Run selected DSP and recreation tests
         run: ctest --test-dir build-native -R '^(quality_tests|level_tests|recreation_workflow_tests|production_tests|sequence_tests|preview_tests|tuning_tests|context_tests|assistant_tests)$' --output-on-failure
       - name: Validate state, automation and offline audio contract
@@ -49,6 +53,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: NovaSynth-0.21-UI-checks
-          path: build-native/screens/*
+          name: NovaSynth-0.22-UI-checks
+          path: |
+            build-native/screens/*
+            build-native/cloud-checks/*
           retention-days: 14

@@ -1,13 +1,18 @@
 # Nova Synth
 
 Instrumento VST3 para Windows x64 orientado a FL Studio.
-Desarrollador: **Eleander Sanchez (Bodby Olwen)**. Version publicada: **0.21 beta**.
+Desarrollador: **Eleander Sanchez (Bodby Olwen)**. Version de trabajo: **0.22 beta**.
 Codigo bajo GPL-3.0-or-later; conserva `LICENSE.txt` y los avisos incluidos.
 
 Este repositorio contiene las fuentes propias, pruebas, datos/modelos sinteticos,
  scripts y **JUCE 7.0.12 completo en `ThirdParty/JUCE`**. No usa submodulos ni Git LFS.
 El codigo y los datos de la version publicada se preservan sin cambios en esta entrega.
 Los archivos de organizacion/documentacion se anadieron para facilitar continuidad.
+
+## Novedades 0.22
+
+Busqueda exhaustiva local y servicio remoto CPU experimental. No hay servidor
+publico ni una nueva red neuronal incluida. Lee [alcance](docs/ACTUALIZACION_0.22.md).
 
 ## Novedades 0.21
 

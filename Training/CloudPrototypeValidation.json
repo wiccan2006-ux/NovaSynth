@@ -1,0 +1,21 @@
+{
+  "protocol": 1,
+  "health": "PASS",
+  "authentication": "PASS",
+  "malformed_wav": "PASS",
+  "real_plugin_http_worker_roundtrip": "PASS",
+  "undo_and_session_only_credentials": "PASS",
+  "hosted_service": false,
+  "new_neural_training": false,
+  "gpu": false,
+  "code_commit": "640457245e745cca67547712cdbe907177ad3fd8",
+  "compiler": "Linux g++ 13.3.0; Windows LLVM-MinGW 20250114 cross compilation",
+  "fl_studio_validated": false,
+  "github_native_build": "pending in queue",
+  "windows_module_sha256": "061e00a0fee85462448201a7231acc1ca1065b6fcf481e8034e3d1161f9ccbe2",
+  "dsp_tests": "10/10 PASS",
+  "editor": "PASS: native navigation, exhaustive menu, cancel server configuration, legacy workflows",
+  "host_contract": "PASS: 3 rates x 5 programs; worst 64/512-block delta 0",
+  "http_roundtrip": "PASS; direct headless test exit 0",
+  "github_actions": "queued/unavailable, not used as validation evidence"
+}

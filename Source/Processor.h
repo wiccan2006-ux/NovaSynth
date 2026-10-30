@@ -17,6 +17,7 @@
 #include "WorkflowTools.h"
 #include "PersonalLibrary.h"
 #include "RecreationSearch.h"
+#include "CloudProtocol.h"
 #include <atomic>
 #include <memory>
 #include <thread>
@@ -41,6 +42,7 @@ public:
     std::atomic<bool> resetPresetAudio{false};std::atomic<bool> panicRequested{false},arpEnabled{false};std::atomic<float> arpBpm{120};std::array<std::atomic<int>,nova::arpSteps> arpNotes{};
     void resetArpPattern(){for(auto& n:arpNotes)n.store(nova::arpRest);}
 #include "WorkflowMethods.h"
+#include "CloudMethods.h"
 
     juce::StringArray versionNames()const{const juce::ScopedLock lock(metadataLock);juce::StringArray names;for(const auto& v:versions)names.add(v.name);return names;}
     void saveVersion(juce::String name={}){if(fitting.load()||loading.load())return;captureVersion(name.isEmpty()?"Guardado manual":name);say("Version guardada. Maximo 12; al llenarse se reemplaza la mas antigua. Se guarda con el proyecto/preset.");}
@@ -203,7 +205,7 @@ public:
     bool startFit(){
         const juce::ScopedLock lock(jobLock);if(fitting.load()||loading.load())return false;
         std::shared_ptr<const nova::Sound> sound;std::shared_ptr<const ReferenceFile> file;nova::SelectionRange range;{const juce::ScopedLock meta(metadataLock);sound=reference;file=referenceFile;range=selection;}
-        if(file)return startContextFit(file,range);
+        if(file&&remoteEnabled.load())return startRemoteFit(file,range);if(file)return startContextFit(file,range);
         if(!file&&(!sound || sound->left.empty())){say("Arrastra una nota aislada para iniciar la busqueda.");return false;}
         stopReference();if(worker.joinable())worker.join();pendingContext.reset();pendingBank.reset();pendingArp={};refinementJob=reviewLearningJob=false;analysisStage.store(0);cancel.store(false);done.store(false);fitting.store(true);fitProgress.store(0);fitTrials.store(0);auto initial=params();int budget=quality.load();bool neural=useNeural.load(),clean=cleanPitch.load();
         say("Buscando controles de sintesis y efectos. La muestra es solo una referencia.");
@@ -326,7 +328,7 @@ private:
     bool startContextFit(const std::shared_ptr<const ReferenceFile>& file,nova::SelectionRange range){beginAssistantFit(false);automaticSearchJob=true;bool clean=cleanPitch.load(),neural=useNeural.load();int budget=quality.load(),hint=familyHint.load();say("Revisando audio y comparando motores. No necesitas saber el instrumento.");
         worker=std::thread([this,file,range,clean,neural,budget,hint]{try{auto source=readSelectedReference(formats,*file,range,false,60);pendingSearch=std::make_unique<nova::RecreationSearch>(nova::searchRecreation(*source,range.start,budget,clean,neural,hint,cancel,[this](float f,int n,double loss,int stage){fitProgress.store(f);fitTrials.store(n);fitError.store(static_cast<float>(loss));analysisStage.store(stage);}));result=pendingSearch->fit;if(result.valid&&!result.cancelled){pendingContext=std::make_shared<nova::ContextAnalysis>(pendingSearch->analysis);pendingBank=pendingSearch->alternatives.front().bank;}}catch(const std::exception& e){result={};result.error=e.what();}catch(...){result={};result.error="No se pudo analizar el contexto.";}done.store(true,std::memory_order_release);});return true;
     }
-    void stopAndJoin(){const juce::ScopedLock lock(jobLock);cancel.store(true);if(worker.joinable())worker.join();done.store(false);loadDone.store(false);reviewDone.store(false);comparisonDone.store(false);preparingComparison.store(false);scanningReview.store(false);refinementJob=reviewLearningJob=false;fitting.store(false);loading.store(false);}
+    void stopAndJoin(){const juce::ScopedLock lock(jobLock);cancel.store(true);if(worker.joinable())worker.join();done.store(false);loadDone.store(false);reviewDone.store(false);comparisonDone.store(false);preparingComparison.store(false);scanningReview.store(false);refinementJob=reviewLearningJob=false;fitting.store(false);loading.store(false);remoteWorking.store(false);}
     void publish(const std::shared_ptr<const nova::Sound>& sound,const juce::String& name){
         std::array<float,256> wave{};
         if(sound&&!sound->left.empty())for(size_t i=0;i<256;++i){size_t a=i*sound->left.size()/256,b=(i+1)*sound->left.size()/256;for(size_t j=a;j<b;++j)wave[i]=std::max(wave[i],std::abs(sound->left[j]));}
@@ -342,7 +344,7 @@ private:
                 {const juce::ScopedLock meta(metadataLock);referenceFile=pendingFile;reference.reset();review.reset();reviewFile.reset();reviewChosen.clear();alternatives.clear();fitSummary.clear();contextFile.reset();contextNotes.clear();selection=nova::SelectionRange::between(0,std::min(contextEnabled.load()?15.:3.,pendingFile->duration),pendingFile->duration,selectionMaximum());sampleName=pendingFile->file.getFileName();diagnosticReport="Referencia nueva: pulsa Diagnosticar.";comparison={};typeLabel="Seleccion sin analizar";preview.fill(0);const auto& peaks=pendingFile->mips.empty()?pendingFile->peaks:pendingFile->mips.back();for(size_t i=0;i<preview.size();++i){size_t a=i*peaks.size()/preview.size(),b=(i+1)*peaks.size()/preview.size();for(size_t j=a;j<b;++j)preview[i]=std::max(preview[i],std::max(std::abs(peaks[j].low),std::abs(peaks[j].high)));}}
                 say("Referencia lista. Contexto: hasta 60 s para aprender el instrumento; nota aislada: hasta 3 s.");
             }pendingFile.reset();loading.store(false);return;
-        }if(!done.exchange(false,std::memory_order_acq_rel))return;if(worker.joinable())worker.join();
+        }if(!done.exchange(false,std::memory_order_acq_rel))return;if(worker.joinable())worker.join();remoteWorking.store(false);
         if(refinementJob){finishRefinement();return;}
         if(result.cancelled||cancel.load())say("Busqueda cancelada. Se conservan los controles anteriores.");
         else if(!result.valid)say("No se pudo ajustar: "+juce::String(result.error));
