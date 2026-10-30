@@ -2,15 +2,15 @@
 #include "Diagnostics.h"
 #include <random>
 namespace nova {
-enum class RefineGoal { balanced,attack,body,lessMetallic };
+enum class RefineGoal { balanced,attack,body,lessMetallic,brighter,darker,shorterTail };
 struct RefineExample {FitTarget target;float velocity=.8f;};
-struct RefineMetrics {double attack=0,body=0,tail=0,overall=0,metallic=0;};
+struct RefineMetrics {double attack=0,body=0,tail=0,overall=0,metallic=0,brightnessDelta=0;};
 struct RefinementReport {RefineGoal goal=RefineGoal::balanced;FitReport fit;RefineMetrics before,after;double objectiveBefore=0,objectiveAfter=0;int examples=0;};
 inline RefineMetrics refinementMetrics(const Features& ref,const Features& result){
     RefineMetrics m;for(int i=0;i<8;++i)m.attack+=std::abs(ref.attack[i]-result.attack[i])/8;
     for(int i=0;i<128;++i)m.body+=std::abs(ref.spectrum[i]-result.spectrum[i])/128;
     for(int i=16;i<24;++i)m.tail+=std::abs(ref.envelope[i]-result.envelope[i])/8;
-    m.overall=featureDistance(ref,result);return m;
+    for(int i=0;i<128;++i)m.brightnessDelta+=(result.spectrum[i]-ref.spectrum[i])*i/(128.*128.);m.overall=featureDistance(ref,result);return m;
 }
 inline double metallicEnergy(const SpectralModel* model,const Params& p){
     if(!model||!model->valid())return p.fm*.25+p.resonance*.1;
@@ -22,6 +22,9 @@ inline double refinementObjective(const RefineMetrics& m,RefineGoal goal){
     if(goal==RefineGoal::attack)return m.overall*.45+m.attack*.5+m.tail*.08;
     if(goal==RefineGoal::body)return m.overall*.35+m.body*.8+m.tail*.08;
     if(goal==RefineGoal::lessMetallic)return m.overall+m.metallic*.16;
+    if(goal==RefineGoal::brighter)return m.overall+std::max(0.,-m.brightnessDelta)*1.2;
+    if(goal==RefineGoal::darker)return m.overall+std::max(0.,m.brightnessDelta)*1.2;
+    if(goal==RefineGoal::shorterTail)return m.overall*.5+m.tail*.7;
     return m.overall;
 }
 // Fixed engine and note mapping. Searches locally around the user's current patch.
@@ -36,11 +39,11 @@ inline RefinementReport refineInstrument(const std::vector<RefineExample>& examp
     auto evaluate=[&](const Params& p){
         RefineMetrics metrics;double gains=0;bool valid=true;
         for(size_t i=0;i<targets.size();++i){if(cancel.load()){valid=false;break;}const auto& t=targets[i].target;l.assign(t.left.size(),0);r.assign(t.right.size(),0);engine.configure(p);engine.reset();engine.noteOn(1,t.note,targets[i].velocity);int gate=p.engine==1?static_cast<int>(l.size()):std::clamp(static_cast<int>(t.gate*rate),0,static_cast<int>(l.size()));engine.render(l.data(),r.data(),gate);engine.noteOff(1,t.note);engine.render(l.data()+gate,r.data()+gate,static_cast<int>(l.size())-gate);
-            auto f=extractor.extract(l,r,rate);if(f.rms<1e-8){valid=false;break;}auto m=refinementMetrics(reference[i],f);metrics.attack+=m.attack;metrics.body+=m.body;metrics.tail+=m.tail;metrics.overall+=m.overall;gains+=std::log(std::max(1e-9f,reference[i].rms)/f.rms);
+            auto f=extractor.extract(l,r,rate);if(f.rms<1e-8){valid=false;break;}auto m=refinementMetrics(reference[i],f);metrics.attack+=m.attack;metrics.body+=m.body;metrics.tail+=m.tail;metrics.overall+=m.overall;metrics.brightnessDelta+=m.brightnessDelta;gains+=std::log(std::max(1e-9f,reference[i].rms)/f.rms);
             const SpectralModel* used=p.engine==1?model.get():nullptr;if(p.engine==1&&p.useZones&&zones&&zones->valid())used=&zones->zones[zones->select(t.note,targets[i].velocity)].model;metrics.metallic+=metallicEnergy(used,p);
         }
         if(!valid){if(!cancel.load()){++out.fit.trials;if(progress)progress(out.fit.trials,budget,best);}return;}
-        for(double* x:{&metrics.attack,&metrics.body,&metrics.tail,&metrics.overall,&metrics.metallic})*x/=targets.size();
+        for(double* x:{&metrics.attack,&metrics.body,&metrics.tail,&metrics.overall,&metrics.metallic,&metrics.brightnessDelta})*x/=targets.size();
         double loss=refinementObjective(metrics,goal);
         if(out.fit.trials==0){out.before=metrics;out.objectiveBefore=loss;}
         bool preservesBody=goal!=RefineGoal::body||metrics.body<=out.before.body+1e-7;

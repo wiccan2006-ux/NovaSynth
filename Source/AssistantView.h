@@ -4,7 +4,7 @@
 class AssistantView final:public juce::Component,private juce::ListBoxModel,private juce::Timer {
     NovaProcessor& p;juce::Colour accent;
     juce::TextButton scan{"1. Revisar audio"},learn{"2. Aprender elegidas"},refine{"3. Refinar instrumento"},original{"Escuchar A"},recreated{"Recreado B"},stop{"Detener"},cancel{"Cancelar"},close{"Muestra"},best{"Recomendadas"},none{"Ninguna"},undo{"Deshacer ajuste"};
-    juce::ToggleButton include{"Usar esta nota"};juce::ComboBox goal;juce::ListBox rows{"Notas detectadas",this};juce::TextEditor detail;juce::Label feedback;
+    juce::ToggleButton include{"Usar esta nota"};juce::ComboBox goal,noteEdit;bool updatingNote=false;juce::ListBox rows{"Notas detectadas",this};juce::TextEditor detail;juce::Label feedback;
     std::shared_ptr<const nova::ReferenceReview> review;std::vector<int> chosen;int focused=0;
     juce::Rectangle<float> waveform()const{return {18,94,getWidth()-36.f,65};}
     bool included(int row)const{return std::find(chosen.begin(),chosen.end(),row)!=chosen.end();}
@@ -12,7 +12,7 @@ class AssistantView final:public juce::Component,private juce::ListBoxModel,priv
     static juce::String state(const nova::ReviewRow& row){if(row.clipped>.001)return "Picos recortados";if(row.note.centsSpread>75)return "Tono inestable";if(row.note.confidence<.87f)return "Tono incierto";return "Region tonal estable";}
     juce::String detailText()const{
         if(!review)return "Marca una seleccion en MUESTRA y pulsa Revisar audio.\n\nEscucha las notas y elige hasta ocho del mismo instrumento.\n\nNo separa automaticamente instrumentos, ruido ni efectos.";
-        juce::String result;auto refined=p.refinementView();if(refined){const char* goals[]={"Equilibrar parecido","Priorizar ataque","Conservar cuerpo","Menos metalico"};const auto& a=refined->before;const auto& b=refined->after;result="ULTIMO REFINAMIENTO / "+juce::String(goals[static_cast<int>(refined->goal)])+"\nAntes > despues / distancias, no porcentajes\nAtaque: "+juce::String(a.attack,4)+" > "+juce::String(b.attack,4)+"\nCuerpo: "+juce::String(a.body,4)+" > "+juce::String(b.body,4)+"\nCola: "+juce::String(a.tail,4)+" > "+juce::String(b.tail,4)+"\nGlobal: "+juce::String(a.overall,4)+" > "+juce::String(b.overall,4)+"\n\n";}
+        juce::String result;auto refined=p.refinementView();if(refined){const char* goals[]={"Equilibrar parecido","Priorizar ataque","Conservar cuerpo","Menos metalico","Muy opaco","Muy brillante","Cola muy larga"};const auto& a=refined->before;const auto& b=refined->after;result="ULTIMO REFINAMIENTO / "+juce::String(goals[static_cast<int>(refined->goal)])+"\nAntes > despues / distancias, no porcentajes\nAtaque: "+juce::String(a.attack,4)+" > "+juce::String(b.attack,4)+"\nCuerpo: "+juce::String(a.body,4)+" > "+juce::String(b.body,4)+"\nCola: "+juce::String(a.tail,4)+" > "+juce::String(b.tail,4)+"\nGlobal: "+juce::String(a.overall,4)+" > "+juce::String(b.overall,4)+"\n\n";}
         juce::String text=result+juce::String(review->summary)+"\n\nCobertura tonal: "+juce::String(review->analysis.usableFraction*100,1)+" % del fragmento; no es parecido.\nPicos recortados: "+juce::String(review->clipped*100,2)+" % de muestras.";
         if(focused>=0&&focused<static_cast<int>(review->rows.size())){const auto& row=review->rows[focused];text+="\n\n"+state(row)+" | MIDI "+juce::String(row.note.note)+"\nConfianza tonal: "+juce::String(row.note.confidence,3)+"\nVariacion P90-P10: "+juce::String(row.note.centsSpread,1)+" cents\nDesviacion mediana: "+juce::String(row.note.detuning,1)+" cents\nIntensidad relativa: "+juce::String(static_cast<int>(row.note.velocity*127));}
         return text+"\n\n"+p.analysisReport();
@@ -29,14 +29,15 @@ class AssistantView final:public juce::Component,private juce::ListBoxModel,priv
     void selectedRowsChanged(int row)override{if(row>=0)focused=row;updateDetails();repaint();}
     void listBoxItemClicked(int row,const juce::MouseEvent& e)override{if(e.position.x<30)p.chooseReviewRow(row,!included(row));}
     void listBoxItemDoubleClicked(int row,const juce::MouseEvent&)override{focused=row;auditionSelected(0);}
-    void updateDetails(){include.setToggleState(included(focused),juce::dontSendNotification);auto text=detailText();if(text!=detail.getText())detail.setText(text,false);}
+    void updateDetails(){if(review&&focused>=0&&focused<getNumRows()){updatingNote=true;noteEdit.setSelectedId(review->rows[focused].note.note+1,juce::dontSendNotification);updatingNote=false;}include.setToggleState(included(focused),juce::dontSendNotification);auto text=detailText();if(text!=detail.getText())detail.setText(text,false);}
 public:
     std::function<void()> onClose;
     AssistantView(NovaProcessor& processor,juce::Colour colour):p(processor),accent(colour){
-        for(auto* c:std::initializer_list<juce::Component*>{&scan,&learn,&refine,&original,&recreated,&stop,&cancel,&close,&best,&none,&undo,&include,&goal,&rows,&detail,&feedback}){addAndMakeVisible(c);c->setWantsKeyboardFocus(false);}
+        for(auto* c:std::initializer_list<juce::Component*>{&scan,&learn,&refine,&original,&recreated,&stop,&cancel,&close,&best,&none,&undo,&include,&goal,&noteEdit,&rows,&detail,&feedback}){addAndMakeVisible(c);c->setWantsKeyboardFocus(false);}
         rows.setRowHeight(34);rows.setMultipleSelectionEnabled(false);rows.setColour(juce::ListBox::backgroundColourId,juce::Colour(0xff0b1320));rows.setColour(juce::ListBox::outlineColourId,juce::Colour(0x32ffffff));rows.setOutlineThickness(1);
         detail.setMultiLine(true,true);detail.setReadOnly(true);detail.setScrollbarsShown(true);detail.setFont(13.5f);detail.setColour(juce::TextEditor::backgroundColourId,juce::Colour(0xff0c1420));detail.setColour(juce::TextEditor::textColourId,juce::Colour(0xffdbe5f0));
-        goal.addItemList({"Equilibrar parecido","Priorizar ataque","Conservar cuerpo","Menos metalico"},1);goal.setSelectedId(1,juce::dontSendNotification);
+        goal.addItemList({"Equilibrar parecido","Priorizar ataque","Conservar cuerpo","Menos metalico","Muy opaco","Muy brillante","Cola muy larga"},1);goal.setSelectedId(1,juce::dontSendNotification);
+        for(int n=24;n<=108;++n)noteEdit.addItem(juce::MidiMessage::getMidiNoteName(n,true,true,4)+" / MIDI "+juce::String(n),n+1);noteEdit.setName("reviewNoteCorrection");noteEdit.setTooltip("Corrige la nota detectada. Si no sabes cual es, conserva Automatico y escucha.");noteEdit.onChange=[this]{if(!updatingNote&&noteEdit.getSelectedId()>0)p.correctReviewNote(focused,noteEdit.getSelectedId()-1);};
         scan.onClick=[this]{focus();p.startReview();};learn.onClick=[this]{focus();p.learnReviewed();};refine.onClick=[this]{focus();p.startRefinement(static_cast<nova::RefineGoal>(goal.getSelectedItemIndex()),focused);};
         original.onClick=[this]{auditionSelected(0);};recreated.onClick=[this]{auditionSelected(1);};stop.onClick=[this]{p.stopReference();focus();};cancel.onClick=[this]{p.cancelFit();};close.onClick=[this]{p.stopReference();if(onClose)onClose();};
         best.onClick=[this]{p.chooseRecommendedReview(true);};none.onClick=[this]{p.chooseRecommendedReview(false);};include.onClick=[this]{p.chooseReviewRow(focused,include.getToggleState());};undo.onClick=[this]{p.undoFit();};
@@ -51,7 +52,7 @@ public:
         best.setBounds(660,12,150,28);none.setBounds(820,12,122,28);close.setBounds(956,12,96,28);
         scan.setBounds(18,52,150,30);original.setBounds(178,52,112,30);recreated.setBounds(300,52,120,30);stop.setBounds(430,52,90,30);include.setBounds(530,52,170,30);learn.setBounds(710,52,190,30);cancel.setBounds(912,52,140,30);
         rows.setBounds(18,191,624,203);detail.setBounds(660,191,392,133);
-        goal.setBounds(18,414,260,30);refine.setBounds(290,414,250,30);undo.setBounds(554,414,190,30);feedback.setBounds(18,451,1034,22);
+        goal.setBounds(18,414,260,30);refine.setBounds(290,414,250,30);undo.setBounds(554,414,190,30);noteEdit.setBounds(760,414,292,30);feedback.setBounds(18,451,1034,22);
     }
     void paint(juce::Graphics& g)override{
         g.setColour(juce::Colour(0xff080e18));g.fillRoundedRectangle(getLocalBounds().toFloat(),22);nova::glass::panel(g,getLocalBounds().toFloat(),accent,22,this);
@@ -72,6 +73,6 @@ public:
 private:
     void timerCallback()override{
         if(!isShowing())return;detail.setFont(13.5f*p.textScale());auto next=p.reviewView();auto selected=p.chosenReviewRows();if(next!=review||selected!=chosen){review=next;chosen=selected;focused=review?std::clamp(focused,0,std::max(0,getNumRows()-1)):0;rows.updateContent();if(getNumRows()>0)rows.selectRow(focused);else rows.deselectAllRows();rows.repaint();}updateDetails();
-        bool busy=p.loading.load()||p.fitting.load();for(auto* c:std::initializer_list<juce::Component*>{&scan,&best,&none,&rows,&goal})c->setEnabled(!busy);scan.setEnabled(!busy&&p.hasReference());learn.setEnabled(!busy&&!chosen.empty());refine.setEnabled(!busy&&!chosen.empty());include.setEnabled(!busy&&getNumRows()>0);original.setEnabled(!busy&&getNumRows()>0);recreated.setEnabled(!busy&&getNumRows()>0);undo.setEnabled(!busy&&p.canUndoFit());cancel.setEnabled(busy);feedback.setText(busy?(p.reviewScanning()?"Revisando notas... ":"Buscando ajustes... ")+juce::String(static_cast<int>(p.fitProgress.load()*100))+" % | Cancelar conserva el instrumento.":p.status(),juce::dontSendNotification);feedback.setTooltip(p.status());original.setToggleState(p.referencePlaying()&&p.previewMode.load()==0,juce::dontSendNotification);recreated.setToggleState(p.referencePlaying()&&p.previewMode.load()==1,juce::dontSendNotification);repaint();
+        bool busy=p.loading.load()||p.fitting.load();for(auto* c:std::initializer_list<juce::Component*>{&scan,&best,&none,&rows,&goal})c->setEnabled(!busy);scan.setEnabled(!busy&&p.hasReference());learn.setEnabled(!busy&&!chosen.empty());refine.setEnabled(!busy&&!chosen.empty());include.setEnabled(!busy&&getNumRows()>0);noteEdit.setEnabled(!busy&&getNumRows()>0);original.setEnabled(!busy&&getNumRows()>0);recreated.setEnabled(!busy&&getNumRows()>0);undo.setEnabled(!busy&&p.canUndoFit());cancel.setEnabled(busy);feedback.setText(busy?(p.reviewScanning()?"Revisando notas... ":"Buscando ajustes... ")+juce::String(static_cast<int>(p.fitProgress.load()*100))+" % | Cancelar conserva el instrumento.":p.status(),juce::dontSendNotification);feedback.setTooltip(p.status());original.setToggleState(p.referencePlaying()&&p.previewMode.load()==0,juce::dontSendNotification);recreated.setToggleState(p.referencePlaying()&&p.previewMode.load()==1,juce::dontSendNotification);repaint();
     }
 };

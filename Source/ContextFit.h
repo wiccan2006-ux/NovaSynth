@@ -10,7 +10,7 @@ inline ContextFitReport fitContextNotes(const Sound& source,double offset,Contex
  if(out.analysis.picked.empty()){out.fit.error="No hay notas aisladas suficientemente estables. Usa el mismo instrumento sin mezcla ni acordes.";return out;}
  auto bank=std::make_shared<ZoneBank>();std::vector<ContextNote> accepted;int budget=std::max(40,totalBudget/static_cast<int>(out.analysis.picked.size())),completed=0;
  for(auto candidate:out.analysis.picked){
-  if(cancel.load())break;auto note=extractContextNote(source,candidate);if(!note.tonal||std::abs(note.root-candidate.note)>1)continue;
+  if(cancel.load())break;auto note=extractContextNote(source,candidate);if(!note.tonal||(!candidate.manual&&std::abs(note.root-candidate.note)>1))continue;if(candidate.manual)note.root=candidate.note;
   auto target=makeTarget(note,note.root,totalBudget>=1200?44100:22050,false);if(stage)stage(1);
   auto fit=fitParameters(target,Params{},budget,cancel,[&](int trial,int,double loss){if(progress)progress(completed*budget+trial,static_cast<int>(out.analysis.picked.size())*budget,loss,.15f+.85f*static_cast<float>(completed*budget+trial)/(out.analysis.picked.size()*budget));},2,{},false,clean);
   if(cancel.load())break;if(!fit.valid||!fit.model)continue;bool duplicate=false;

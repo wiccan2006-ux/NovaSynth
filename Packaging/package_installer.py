@@ -24,12 +24,16 @@ license_files+=list((a.toolchain/'x86_64-w64-mingw32/share/mingw32').glob('COPYI
 for path in license_files:
     notices.append('\n\n===== '+path.name+' =====\n\n'+path.read_text(errors='replace'))
 third_party=build/'LICENCIAS_TERCEROS.txt'
-third_party.write_text('Nova Synth 0.17.0\nJUCE 7.0.12 / VST3 SDK (GPL v3 option)\nLLVM-MinGW runtime notices\n'+''.join(notices))
+third_party.write_text('Nova Synth 0.18.0\nJUCE 7.0.12 / VST3 SDK (GPL v3 option)\nLLVM-MinGW runtime notices\n'+''.join(notices))
 sources=build/'Fuentes.zip'
 with zipfile.ZipFile(sources,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
-    for path in sorted(root.rglob('*')):
+    paths=[]
+    for folder in ('Source','Tests','Training','Packaging','docs','.github'):
+        paths.extend((root/folder).rglob('*'))
+    paths+=list(root.glob('*.md'))+list(root.glob('*.txt'))+[root/'CMakeLists.txt',root/'.gitignore',root/'.gitattributes']
+    for path in sorted(set(paths)):
         relative=path.relative_to(root)
-        if any(part in {'build-windows','build','build-core','__pycache__','.git','ThirdParty'} for part in relative.parts): continue
+        if any(part in {'__pycache__','.git'} for part in relative.parts): continue
         if path.is_file(): z.write(path,Path('NovaSynth')/relative)
     for path in sorted(a.juce.rglob('*')):
         relative=path.relative_to(a.juce)
@@ -48,8 +52,8 @@ rc.write_text('''#include <windows.h>
 104 RCDATA '''+quote(sources)+'''
 105 RCDATA '''+quote(third_party)+'''
 1 VERSIONINFO
- FILEVERSION 0,17,0,0
- PRODUCTVERSION 0,17,0,0
+ FILEVERSION 0,18,0,0
+ PRODUCTVERSION 0,18,0,0
  FILEFLAGSMASK 0x3fL
  FILEOS VOS_NT_WINDOWS32
  FILETYPE VFT_APP
@@ -60,9 +64,9 @@ BEGIN
   BEGIN
    VALUE "CompanyName", "Eleander Sanchez (Bodby Olwen)\\0"
    VALUE "FileDescription", "Nova Synth VST3 installer\\0"
-   VALUE "FileVersion", "0.17.0\\0"
+   VALUE "FileVersion", "0.18.0\\0"
    VALUE "ProductName", "Nova Synth\\0"
-   VALUE "ProductVersion", "0.17.0\\0"
+   VALUE "ProductVersion", "0.18.0\\0"
   END
  END
  BLOCK "VarFileInfo"

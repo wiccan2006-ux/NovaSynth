@@ -1,3 +1,78 @@
+# Nova Synth 0.18 beta — Explorar, guardar y recrear
+
+Desarrollador: **Eleander Sanchez (Bodby Olwen)**.
+
+## Instalar 0.18
+
+Cierra FL Studio, ejecuta NovaSynth_0.18_Instalar_Windows_x64.exe y confirma la instalacion.
+En FL Studio abre Options > Manage plugins > Find installed plugins y carga Nova Synth.
+La interfaz debe mostrar v0.18. No necesitas instalar Python, Git ni modelos aparte.
+Conserva 812 programas y los IDs de parametros anteriores. Guarda copia de tus proyectos.
+Fuentes y licencias se instalan junto con la guia en Program Files/Nova Synth.
+
+## Explorar sin perder tu sonido
+
+- Simple ofrece cuatro macros. El selector Simple/Avanzada/Tocar abre todos los controles
+  o una vista grande para interpretar. El teclado PC y MIDI siguen disponibles.
+- Banco selecciona sin cargar: elige una fila, preescucha una nota, acorde o secuencia
+  y pulsa Cargar elegido. Doble clic tambien carga. Anterior/Siguiente cargan dentro
+  del filtro. La escucha se sintetiza por separado y no cambia el programa actual.
+- Combinar filtros exige todas las etiquetas elegidas. Buscar similares ordena por
+  cercania de controles de timbre y envolvente; no es un buscador neuronal de audio.
+- Fijar FX conserva los efectos al cargar sonidos y durante la preescucha de fabrica.
+  Fijar volumen conserva Output, ganancia y compensacion al cargar. La preescucha
+  tiene igualacion RMS independiente, limitada por pico; no es LUFS.
+- Deshacer/Rehacer conservan hasta 64 cambios de instrumento, modelos, bancos y ARP.
+  Las ediciones continuas se agrupan tras 450 ms sin cambios; comenzar otro arrastre
+  crea un limite. Ctrl+Z, Ctrl+Mayus+Z y Ctrl+Y no interceptan edicion de texto.
+  Restaurar estado desde el host limpia este historial; Abrir preset es deshacible.
+- Variar ofrece Sutil/Media/Amplia. Bloquear fija timbre, envolvente, FX o movimiento.
+  Siempre conserva el motor, la afinacion, el mapeo tonal y las ganancias.
+- Doble clic restablece una perilla. Sus ayudas explican el efecto en lenguaje sencillo.
+  Guia ofrece tres pasos opcionales. Esc o PANIC detienen la escucha y el instrumento.
+
+## Mis sonidos
+
+Guardar abre la biblioteca personal. Escribe nombre, categoria y etiquetas y pulsa
+Guardar en biblioteca: crea una copia con identificador nuevo; no pisa otro sonido.
+Puedes buscar, marcar favoritos, preescuchar, cargar, importar y exportar .novapreset.
+Los sonidos personales estan en %APPDATA%/NovaSynth/Presets y los favoritos de fabrica
+se guardan en %APPDATA%/NovaSynth/Favourites.xml. Son propios de la cuenta de Windows.
+No se suben automaticamente a GitHub. Copia esa carpeta para respaldar tus creaciones.
+Desinstalar Nova Synth no borra esta biblioteca. El indicador Modificado/Guardado
+corresponde al sonido; las preferencias visuales se guardan con el proyecto.
+
+## Recreacion sin conocer el instrumento
+
+1. Seleccionar: arrastra audio, marca el recorte, usa lupa/zoom y escucha con Espacio.
+   Contexto admite hasta 60 s; el analisis usa regiones representativas, no convierte
+   la frase completa en un sampler. Nota aislada conserva el limite de 3 s.
+2. Revisar: escucha las regiones, elige hasta ocho notas/intensidades y corrige la nota
+   MIDI si hace falta. Confianza, desviacion, variacion y clipping son medidas estimadas.
+3. Recrear: Automatico es la opcion inicial. Crear automaticamente revisa y compara
+   cinco motores y un candidato por zonas. Recrear notas elegidas respeta la revision.
+   El tipo de instrumento es opcional: solo favorece candidatos cercanos, sin excluir
+   otros motores. No identifica instrumentos reales con certeza.
+4. Comparar: prepara la misma secuencia monofonica detectada para A/B, con volumen
+   comparable. Cambiar sonido o referencias invalida la comparacion: prepara de nuevo.
+   Versiones conserva los puntos de partida y resultados aceptados.
+
+El ajuste compara ataque, cuerpo y caida en varias notas. Ofrece hasta tres alternativas:
+Mas parecido, Mas limpio y Mas expresivo; omite variantes iguales o sin verificacion.
+El tono se comprueba cuando es medible; en modo Centrada se rechazan candidatos con
+mas de 12 cents de error medido en los ejemplos. Una fundamental ambigua no puede
+certificarse. Conservar desvio aplica el desvio mediano y conserva movimiento donde
+el modelo lo admite; no recupera exactamente la interpretacion.
+
+Mejorar segun mi oido permite priorizar ataque, cuerpo, menos metal, mas brillo,
+menos brillo o cola. Es busqueda local con objetivos medidos, no una red nueva.
+Las referencias con poca cobertura tonal, clipping o tono incierto necesitan revision.
+No hay separacion automatica de mezclas ni transcripcion polifonica universal.
+La IA existente sigue entrenada con sintesis propia. No se promete copia perfecta.
+La comprobacion en FL Studio/Windows y con grabaciones reales del usuario sigue pendiente.
+
+---
+
 # Nova Synth 0.17 beta — Banco organizado, nivel y modulacion
 
 **Desarrollador: Eleander Sanchez (Bodby Olwen)**

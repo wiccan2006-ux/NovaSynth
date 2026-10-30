@@ -11,7 +11,7 @@
 #include <shlobj.h>
 #include <strsafe.h>
 
-#define PRODUCT L"Nova Synth 0.17"
+#define PRODUCT L"Nova Synth 0.18"
 #define REGKEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NovaSynth"
 static WCHAR pluginDir[MAX_PATH], appDir[MAX_PATH], binary[MAX_PATH], uninstaller[MAX_PATH];
 static const WCHAR* title=L"Instalar Nova Synth";
@@ -82,7 +82,7 @@ static BOOL install(void) {
     LONG result=RegCreateKeyExW(HKEY_LOCAL_MACHINE,REGKEY,0,NULL,0,KEY_WRITE,NULL,&key,NULL);
     if(result) { SetLastError(result); error(L"El plugin se copio pero no se pudo registrar el desinstalador."); return FALSE; }
     StringCchPrintfW(command,MAX_PATH+32,L"\"%ls\" --uninstall",uninstaller);
-    BOOL ok=registryString(key,L"DisplayName",PRODUCT) && registryString(key,L"DisplayVersion",L"0.17.0") &&
+    BOOL ok=registryString(key,L"DisplayName",PRODUCT) && registryString(key,L"DisplayVersion",L"0.18.0") &&
             registryString(key,L"Publisher",L"Eleander Sanchez (Bodby Olwen)") && registryString(key,L"InstallLocation",appDir) &&
             registryString(key,L"UninstallString",command);
     DWORD yes=1;
@@ -124,16 +124,16 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE previous,LPWSTR command,int sho
         if(MessageBoxW(NULL,L"Cerrar FL Studio antes de continuar.\n\nDeseas desinstalar Nova Synth?",PRODUCT,MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2)!=IDYES) return 0;
         return uninstall()?0:1;
     }
-    const WCHAR* welcome=L"NOVA SYNTH 0.13 - VST3 PARA WINDOWS 64 BITS\n\n"
+    const WCHAR* welcome=L"NOVA SYNTH 0.18 - VST3 PARA WINDOWS 64 BITS\n\n"
         L"Este instalador incluye el plugin compilado. No necesitas Git, CMake, Visual Studio ni internet.\n\n"
-        L"Eleander Sanchez (Bodby Olwen). Interfaz Liquid Glass con reflejos y halos neon visibles en siete colores. Incluye afinacion automatica, 764 presets, selector de fragmentos y arpegio editable. No garantiza copias identicas ni reconoce instrumentos reales con certeza.\n\n"
+        L"Eleander Sanchez (Bodby Olwen). Interfaz Liquid Glass con reflejos y halos neon visibles en siete colores. Incluye vistas Simple, Avanzada y Tocar; biblioteca personal, deshacer/rehacer, variaciones y recreacion automatica entre varios motores. Conserva 812 presets. No garantiza copias identicas ni reconoce instrumentos reales con certeza.\n\n"
         L"Se instalara en la carpeta comun de plugins VST3. Cierra FL Studio antes de continuar.\n\n"
         L"Codigo abierto bajo GPL v3 o posterior. Licencia y fuentes acompanian este paquete.\n\n"
         L"Deseas instalar Nova Synth?";
     if(MessageBoxW(NULL,welcome,title,MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2)!=IDYES) return 0;
     if(!install()) return 1;
     WCHAR success[1300];
-    StringCchPrintfW(success,1300,L"Nova Synth se ha instalado en:\n%ls\n\nAhora abre FL Studio:\n1. Options > Manage plugins\n2. Find installed plugins\n3. Carga Nova Synth como instrumento en el Channel Rack\n\nCarga un audio, abre MUESTRA, selecciona hasta 3 segundos y pulsa Recrear seleccion. En BANCO tienes 400 presets nuevos. Pulsa ARP EDITAR para revisar el patron detectado. Para tocar, activa Teclado PC y haz clic en el fondo del plugin: A W S E D F T G Y H U J K. Z/X cambia octava; Esc corta el sonido. Arrastra la esquina para cambiar el tamano.\n\nPara desinstalar: Configuracion de Windows > Aplicaciones > Nova Synth.",pluginDir);
+    StringCchPrintfW(success,1300,L"Nova Synth se ha instalado en:\n%ls\n\nAhora abre FL Studio:\n1. Options > Manage plugins\n2. Find installed plugins\n3. Carga Nova Synth como instrumento en el Channel Rack\n\nArrastra un audio a Recrear, selecciona hasta 60 segundos en modo Contexto y pulsa Crear automaticamente. Puedes revisar notas, comparar alternativas y refinar. Banco permite preescuchar antes de cargar. Mis sonidos guarda presets entre proyectos. Para tocar, activa Teclado PC y haz clic en el fondo del plugin: A W S E D F T G Y H U J K. Z/X cambia octava; Esc corta el sonido. Arrastra la esquina para cambiar el tamano.\n\nPara desinstalar: Configuracion de Windows > Aplicaciones > Nova Synth.",pluginDir);
     MessageBoxW(NULL,success,PRODUCT,MB_OK|MB_ICONINFORMATION);
     return 0;
 }
