@@ -1,3 +1,13 @@
+NOVA SYNTH 0.18 BETA — VALIDACION EN CURSO
+Fuentes reconstruidas sobre el snapshot original 0.17 tras restauracion del entorno.
+La rama de trabajo conserva los cambios antes de publicar la version.
+La compilacion Windows y las pruebas de interfaz/nucleo se verifican en GitHub Actions.
+Los resultados definitivos deben consultarse en la ejecucion correspondiente al commit publicado.
+No se ha ejecutado el instalador ni el plugin dentro de FL Studio en la maquina del usuario.
+Los ensayos de recreacion son sinteticos; no prueban parecido perceptual con instrumentos reales.
+
+REGISTRO ANTERIOR 0.17:
+
 NOVA SYNTH 0.17 BETA — SELECCION, CALIBRACION Y MODULACION
 Desarrollador: Eleander Sanchez (Bodby Olwen)
 

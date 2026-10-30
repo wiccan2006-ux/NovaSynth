@@ -1,0 +1,52 @@
+name: Build and validate Nova Synth
+on:
+  push:
+    branches: [feature/intuitive-recreation-018]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configure Windows x64 with bundled JUCE
+        run: cmake -S . -B build-windows -G "Visual Studio 17 2022" -A x64 "-DJUCE_DIR=$env:GITHUB_WORKSPACE/ThirdParty/JUCE" -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+      - name: Build VST3
+        run: cmake --build build-windows --config Release --target NovaSynth_VST3 --parallel 2
+      - name: Package installer and full corresponding sources
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          cmd /s /c "`"$vs\VC\Auxiliary\Build\vcvars64.bat`" && python Packaging\package_windows_native.py"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NovaSynth-0.18-Windows-x64
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+  native-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Install test dependencies
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libx11-dev libxext-dev libxinerama-dev libxrandr-dev libxcursor-dev libfreetype-dev libfontconfig-dev libgl1-mesa-dev xvfb
+      - name: Configure native component tests
+        run: cmake -S . -B build-native -DJUCE_DIR="$GITHUB_WORKSPACE/ThirdParty/JUCE" -DNOVA_BUILD_GUI_TESTS=ON -DCMAKE_BUILD_TYPE=Release
+      - name: Build native UI and core tests
+        run: cmake --build build-native --target editor_integration_tests recreation_workflow_tests production_tests sequence_tests preview_tests tuning_tests context_tests assistant_tests --parallel 2
+      - name: Run selected DSP and recreation tests
+        run: ctest --test-dir build-native -R '^(recreation_workflow_tests|production_tests|sequence_tests|preview_tests|tuning_tests|context_tests|assistant_tests)$' --output-on-failure
+      - name: Exercise UI, library, migration and recreation
+        run: python3 Packaging/run_editor_tests.py build-native/editor_integration_tests build-native/screens
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: NovaSynth-0.18-UI-checks
+          path: build-native/screens/*
+          retention-days: 14
