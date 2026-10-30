@@ -43,7 +43,7 @@ jobs:
       - name: Measure exhaustive search against unchanged baseline
         run: mkdir -p build-native/cloud-checks && build-native/exhaustive_search_tests > build-native/cloud-checks/exhaustive-benchmark.json
       - name: Service protocol and real HTTP recreation
-        run: xvfb-run -a python3 Server/test_service.py build-native/nova_cloud_worker build-native/cloud-checks
+        run: python3 Server/test_protocol.py && xvfb-run -a python3 Server/test_service.py build-native/nova_cloud_worker build-native/cloud-checks
       - name: Run selected DSP and recreation tests
         run: ctest --test-dir build-native -R '^(quality_tests|level_tests|recreation_workflow_tests|production_tests|sequence_tests|preview_tests|tuning_tests|context_tests|assistant_tests)$' --output-on-failure
       - name: Validate state, automation and offline audio contract
