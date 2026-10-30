@@ -1,0 +1,42 @@
+{
+  "version": "0.21.0",
+  "checks": "PASS: PE64, resource DLL/source identity, manifest, version, GPL sources, installer ZIP, SHA256",
+  "source_files": 3721,
+  "dll_bytes": 7481344,
+  "files": [
+    {
+      "name": "NovaSynth_0.21_Codigo_Fuente_Completo.zip",
+      "bytes": 23914849,
+      "sha256": "4889ede8b5fe2c65342b3e36379125825193468c5036e1d97ff224b32a2e014a"
+    },
+    {
+      "name": "NovaSynth_0.21_Instalador.zip",
+      "bytes": 26561920,
+      "sha256": "56be8c70c7e97ee7836490e255a2792e2a97f360c20b84acc7b4a8549c4a9dc3"
+    },
+    {
+      "name": "NovaSynth_0.21_Instalar_Windows_x64.exe",
+      "bytes": 31643136,
+      "sha256": "42d2a51523c00c9a18710d163c90ba56d05f94a31221e304aa8cc7ffaf9dec99"
+    },
+    {
+      "name": "NovaSynth_0.21_VST3_Portable.zip",
+      "bytes": 3311959,
+      "sha256": "23b9bb745a52c5e26485cdfff060a398cba7dce2143c87cd235e773c63ae05e0"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 413,
+      "sha256": "ad5e95f15a291dd5ca181cb9432abe55da6bbdc6b2916f200ac13581dc2e163b"
+    }
+  ],
+  "commit": "43650dd79a113fc1b1e1e9ce09727a1fbf5b6a60",
+  "actions_run": 41089733181,
+  "windows_job": 124180158565,
+  "native_job": 124180158306,
+  "release": "https://github.com/wiccan2006-ux/NovaSynth/releases/tag/v0.21.0-beta",
+  "pending": [
+    "Instalacion interactiva en Windows y uso dentro de FL Studio",
+    "Evaluacion con referencia real del usuario; esta entrega no modifica sintesis ni pesos"
+  ]
+}
