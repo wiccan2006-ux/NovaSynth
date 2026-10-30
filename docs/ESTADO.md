@@ -1,4 +1,4 @@
-# Estado de trabajo 0.19
+# Estado publicado 0.19
 
 Implementacion y condiciones: ACTUALIZACION_0.19.md. Se preservan IDs y 812 programas.
 La version 0.18 se compilo y publico desde e3ad5a26e782c7a410ea68fc06e902c121e28038;
@@ -7,7 +7,10 @@ se corrigieron entonces. No se ha validado dentro de FL Studio.
 
 0.19 agrega medicion multirregistro del banco, compensacion ponderada, respuesta al toque,
 expresividad accesible, informe tonal parcial/completo, menos efectos y prueba AudioProcessor.
-Consultar Actions del commit 0.19 antes de marcar compilacion y checks como aprobados.
+Validado: Actions 40981799622 / commit 1722d335cafe0500ff4b1057b325a62e8e9f194c.
+Windows/MSVC y empaquetado: aprobados. 9 pruebas DSP + contrato AudioProcessor + recorrido
+real de componentes: aprobados. Exportacion de los casos probados: delta maximo 0 entre
+bloques de 64/512. Instalador: PE x64, version/manifest, recurso VST3/fuentes y SHA256: aprobados.
 Escucha humana del banco y prueba FL Studio pendientes. PRUEBA_FL_STUDIO.md contiene casos.
 
 ## Registro historico 0.17 (no describe los avances de 0.18/0.19)

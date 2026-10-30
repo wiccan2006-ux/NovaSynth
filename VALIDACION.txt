@@ -1,3 +1,17 @@
+NOVA SYNTH 0.19 BETA — RESULTADOS VERIFICADOS
+Commit compilado: 1722d335cafe0500ff4b1057b325a62e8e9f194c
+Actions: 40981799622. Windows 123823364665 SUCCESS; native-tests 123823364959 SUCCESS.
+9/9 pruebas DSP. AudioProcessor: 3 frecuencias x 5 programas; restauracion, automatizacion,
+MIDI/pedal/bend y exportacion a bloques 64/512, delta maximo 0 en los casos probados.
+Recorrido real de componentes, referencias, versiones, migracion y biblioteca: PASS.
+Banco: 6496 renders de medicion; 2436 renders LevelTests; pico <= .7002 y rango RMS
+solo -36.7399 a -23.098 dBFS en las condiciones descritas. No LUFS ni true peak.
+Instalador: PE x64, version 0.19.0.0, manifest, VST3 y fuentes incrustadas coinciden
+con distribucion; SHA256SUMS verificado. Ver docs/PUBLICADO_0.19.json.
+FL Studio e instalacion interactiva en Windows: PENDIENTES. Escucha humana: PENDIENTE.
+
+REGISTRO AL COMPILAR / HISTORICO:
+
 NOVA SYNTH 0.19 BETA — VALIDACION EN CURSO
 Mediciones reproducibles: Training/QualityMeasurements.json y QualityReport.json.
 Ver docs/ACTUALIZACION_0.19.md para pruebas y limites.
