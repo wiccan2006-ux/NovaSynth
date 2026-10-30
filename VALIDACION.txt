@@ -1,3 +1,7 @@
+NOVA SYNTH 0.21 BETA — EN VALIDACION
+Navegacion, recientes/favoritos, filtros vacios y estado migrado: pruebas ampliadas.
+Resultados de compilacion y ejecucion pendientes. No validado en FL Studio.
+
 NOVA SYNTH 0.20 BETA — RESULTADOS VERIFICADOS
 Commit compilado: 2e3c83d3adb74fdff369a62944c910928ac9f4dd
 Actions: 40984769831. Windows 123833096651 SUCCESS; native-tests 123833096256 SUCCESS.

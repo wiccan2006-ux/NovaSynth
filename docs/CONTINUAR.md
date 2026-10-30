@@ -2,7 +2,7 @@
 
 ## Mensaje que puedes copiar
 
-> Este es Nova Synth 0.20 beta, VST3 C++/JUCE para Windows x64 y FL Studio.
+> Este es Nova Synth 0.21 beta, VST3 C++/JUCE para Windows x64 y FL Studio.
 > Lee README.md, AGENTS.md, docs/ESTADO.md y docs/ARQUITECTURA.md.
 > Trabaja a partir de estos archivos y del historial Git; no dependas de mi chat
 > anterior. Conserva los estados/presets, IDs del plugin y los creditos de
@@ -32,7 +32,7 @@
 
 ## Lo que hay y lo que no hay en el respaldo
 
-Hay codigo completo de 0.20, JUCE, pesos de las redes, scripts, holdouts y reportes.
+Hay codigo completo de 0.21, JUCE, pesos de las redes, scripts, holdouts y reportes.
 No se conserva el conjunto masivo de entrenamiento generado de cada experimento;
 se regenera con los generadores incluidos. No hay grabaciones del usuario ni
 biblioteca de muestras acusticas externa. No hay cuentas, claves o credenciales.
