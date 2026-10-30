@@ -46,7 +46,7 @@ END
 ''',encoding='utf-8')
 resource=build/'setup-native.res';subprocess.run(['rc','/nologo','/fo',str(resource),str(rc)],check=True)
 exe=dist/'NovaSynth_0.18_Instalar_Windows_x64.exe'
-subprocess.run(['cl','/nologo','/O2','/MT','/utf-8','/DUNICODE','/D_UNICODE',str(root/'Packaging/Setup.c'),str(resource),'/Fe'+str(exe),'/Fo'+str(build/'setup-native.obj'),'/link','/SUBSYSTEM:WINDOWS','/DYNAMICBASE','/NXCOMPAT','shell32.lib','shlwapi.lib','ole32.lib','uuid.lib','advapi32.lib'],check=True)
+subprocess.run(['cl','/nologo','/O2','/MT','/utf-8','/DUNICODE','/D_UNICODE',str(root/'Packaging/Setup.c'),str(resource),'/Fe'+str(exe),'/Fo'+str(build/'setup-native.obj'),'/link','/SUBSYSTEM:WINDOWS','/DYNAMICBASE','/NXCOMPAT','user32.lib','shell32.lib','shlwapi.lib','ole32.lib','uuid.lib','advapi32.lib'],check=True)
 with zipfile.ZipFile(dist/'NovaSynth_0.18_Instalador.zip','w',zipfile.ZIP_DEFLATED) as z:z.write(exe,exe.name)
 with zipfile.ZipFile(dist/'NovaSynth_0.18_VST3_Portable.zip','w',zipfile.ZIP_DEFLATED) as z:
  bundle=plugin.parents[2]
