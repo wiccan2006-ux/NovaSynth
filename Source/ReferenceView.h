@@ -32,8 +32,8 @@ public:
 }
     void paint(juce::Graphics& g)override{
         nova::glass::panel(g,getLocalBounds().toFloat(),accent,18,this);g.setFont(13.f*p.textScale());g.setColour(juce::Colour(0xffcccccc));
-        if(!file){g.drawText(p.loading.load()?"Leyendo la forma de onda... puedes cancelar desde el boton superior.":"Arrastra un audio aqui o pulsa Cargar audio.",getLocalBounds(),juce::Justification::centred);return;}
-        int delta=getHeight()-252;auto area=waveArea();g.drawText(file->file.getFileName()+" / "+timeText(file->duration)+" / arrastra para seleccionar; bordes: ajustar; Shift: mover",12,4,getWidth()-224,25,juce::Justification::centredLeft);
+        if(!file){g.drawText(p.loading.load()?"Leyendo la forma de onda... puedes cancelar desde el boton superior.":"Arrastra un audio aqui o pulsa Cargar audio.",guided?juce::Rectangle<int>(18,70,getWidth()-36,80):getLocalBounds(),juce::Justification::centred);return;}
+        int delta=getHeight()-252;auto area=waveArea();g.drawText(file->file.getFileName()+" / "+timeText(file->duration)+" / arrastra para seleccionar; bordes: ajustar; Shift: mover",12,4,guided?getWidth()-490:getWidth()-224,25,juce::Justification::centredLeft);
         g.setColour(juce::Colour(0xff0a1019).withAlpha(.78f));g.fillRect(area);auto r=p.selectedRange();
         {juce::Graphics::ScopedSaveState state(g);g.reduceClipRegion(area.toNearestInt());g.setColour(juce::Colour(0xff777777));
         const auto* peaks=&file->peaks;double stride=nova::PeakBuilder::stride;for(const auto& level:file->mips){if(viewLength*file->rate/stride<=area.getWidth()*4)break;peaks=&level;stride*=8;}
