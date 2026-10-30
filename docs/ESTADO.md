@@ -1,3 +1,11 @@
+# Estado de trabajo 0.20
+
+Interfaz reorganizada por tareas. Leer ACTUALIZACION_0.20.md. Conserva las funciones,
+812 programas y DSP de 0.19. Revisar CI y capturas del commit antes de publicar.
+FL Studio/Windows interactivo sigue pendiente.
+
+## Registro anterior
+
 # Estado publicado 0.19
 
 Implementacion y condiciones: ACTUALIZACION_0.19.md. Se preservan IDs y 812 programas.

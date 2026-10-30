@@ -1,7 +1,7 @@
 name: Build and validate Nova Synth
 on:
   push:
-    branches: [feature/sound-quality-019]
+    branches: [feature/intuitive-interface-020]
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         with:
-          name: NovaSynth-0.19-Windows-x64
+          name: NovaSynth-0.20-Windows-x64
           path: dist/*
           if-no-files-found: error
           retention-days: 30
@@ -49,6 +49,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: NovaSynth-0.19-UI-checks
+          name: NovaSynth-0.20-UI-checks
           path: build-native/screens/*
           retention-days: 14
