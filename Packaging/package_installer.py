@@ -24,7 +24,7 @@ license_files+=list((a.toolchain/'x86_64-w64-mingw32/share/mingw32').glob('COPYI
 for path in license_files:
     notices.append('\n\n===== '+path.name+' =====\n\n'+path.read_text(errors='replace'))
 third_party=build/'LICENCIAS_TERCEROS.txt'
-third_party.write_text('Nova Synth 0.19.0\nJUCE 7.0.12 / VST3 SDK (GPL v3 option)\nLLVM-MinGW runtime notices\n'+''.join(notices))
+third_party.write_text('Nova Synth 0.20.0\nJUCE 7.0.12 / VST3 SDK (GPL v3 option)\nLLVM-MinGW runtime notices\n'+''.join(notices))
 sources=build/'Fuentes.zip'
 with zipfile.ZipFile(sources,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
     paths=[]
@@ -52,8 +52,8 @@ rc.write_text('''#include <windows.h>
 104 RCDATA '''+quote(sources)+'''
 105 RCDATA '''+quote(third_party)+'''
 1 VERSIONINFO
- FILEVERSION 0,19,0,0
- PRODUCTVERSION 0,19,0,0
+ FILEVERSION 0,20,0,0
+ PRODUCTVERSION 0,20,0,0
  FILEFLAGSMASK 0x3fL
  FILEOS VOS_NT_WINDOWS32
  FILETYPE VFT_APP
@@ -64,9 +64,9 @@ BEGIN
   BEGIN
    VALUE "CompanyName", "Eleander Sanchez (Bodby Olwen)\\0"
    VALUE "FileDescription", "Nova Synth VST3 installer\\0"
-   VALUE "FileVersion", "0.19.0\\0"
+   VALUE "FileVersion", "0.20.0\\0"
    VALUE "ProductName", "Nova Synth\\0"
-   VALUE "ProductVersion", "0.19.0\\0"
+   VALUE "ProductVersion", "0.20.0\\0"
   END
  END
  BLOCK "VarFileInfo"

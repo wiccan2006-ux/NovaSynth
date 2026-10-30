@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(NovaSynth VERSION 0.19.0 LANGUAGES CXX)
+project(NovaSynth VERSION 0.20.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_PLUGIN "Build VST3" ON)

@@ -1,3 +1,29 @@
+# Nova Synth 0.20 beta — Menos a la vista, todo a mano
+
+Eleander Sanchez (Bodby Olwen).
+
+Cierra FL Studio, ejecuta NovaSynth_0.20_Instalar_Windows_x64.exe y escanea plugins.
+Comprueba 0.20 en la cabecera. El instalador incluye fuentes completas y licencias.
+
+- Tocar: elige preset, mueve las cuatro macros y toca. Expresividad responde al toque.
+- Explorar: Banco o Mis sonidos. Busca, preescucha y carga. Filtros y ajustes abre lo extra.
+- Recrear: carga/selecciona, revisa, recrea y compara. Las opciones detalladas se despliegan.
+- Editar sonido: Osciladores, Parciales, Efectos, Matriz, Arpegiador, Diagnostico y Variaciones.
+  Volver a tocar cierra los detalles sin cambiar el sonido. Se recuerda la ultima pestana.
+- Guardar abre Mis sonidos con nombre, categoria y etiquetas. Importar / exportar abre archivos.
+- Deshacer/Rehacer permanecen arriba. Ctrl+Z / Ctrl+Mayus+Z / Ctrl+Y siguen funcionando.
+- Opciones: colores, vidrio, neon, texto, animacion, guia, abrir preset y creditos.
+
+Conserva los 812 programas, parametros, efectos, modelos y funciones de 0.19.
+No cambia el motor ni la calibracion. Los desplegables se recuerdan con el proyecto/preset;
+la ventana abre en Tocar. Los proyectos antiguos siguen cargando sus valores.
+Espacio escucha la referencia en Recrear; teclado PC/MIDI, Z/X y Esc siguen disponibles.
+
+Detalle: docs/ACTUALIZACION_0.20.md. Prueba en FL Studio: docs/PRUEBA_FL_STUDIO.md.
+Las pruebas nativas y la compilacion Windows no sustituyen validar dentro de FL Studio.
+
+---
+
 # Nova Synth 0.19 beta — Sonido y confianza
 
 Desarrollador: **Eleander Sanchez (Bodby Olwen)**.

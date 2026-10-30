@@ -1,3 +1,10 @@
+NOVA SYNTH 0.20 BETA — VALIDACION EN CURSO
+Reorganizacion por tareas y preferencias de interfaz; DSP y datos de 0.19 conservados.
+Comprobar Actions del commit publicado y capturas de EditorIntegrationTests.
+Prueba dentro de FL Studio e instalacion interactiva en Windows siguen pendientes.
+
+REGISTRO ANTERIOR:
+
 NOVA SYNTH 0.19 BETA — RESULTADOS VERIFICADOS
 Commit compilado: 1722d335cafe0500ff4b1057b325a62e8e9f194c
 Actions: 40981799622. Windows 123823364665 SUCCESS; native-tests 123823364959 SUCCESS.
