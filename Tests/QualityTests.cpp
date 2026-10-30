@@ -1,0 +1,9 @@
+#include "QualityMeter.h"
+#include "SynthCore.h"
+#include <iostream>
+#include <stdexcept>
+void check(bool x,const char* m){if(!x)throw std::runtime_error(m);}
+int main(){try{std::vector<float> l(48000),r(48000);for(int i=0;i<48000;++i)l[i]=r[i]=.1f*std::sin(2*nova::pi*440*i/48000.);auto a=nova::qualityLevel(l,r,48000);for(auto* v:{&l,&r})for(auto& x:*v)x*=2;auto b=nova::qualityLevel(l,r,48000);check(std::abs(b.weightedRms/a.weightedRms-2)<1e-5,"weighted level scales linearly");check(std::abs(b.peak-.2)<.001,"peak measurement");l.resize(144000);r.resize(144000);auto padded=nova::qualityLevel(l,r,48000);check(std::abs(padded.weightedRms-b.weightedRms)<.005,"relative gate resists trailing silence");
+ for(double sr:{22050.,44100.,48000.,96000.}){nova::Engine e;auto p=nova::Params{};p.unison=false;p.detune=0;p.waveA=p.waveB=0;p.sub=0;p.fm=0;p.cutoff=19000;p.envAmount=0;p.attack=.001;p.sustain=1;p.release=.08;p.reverb=p.delay=p.chorus=0;p.touch=1;e.configure(p);e.prepare(sr);std::vector<float> x(static_cast<int>(sr*.4)),y(x.size());e.noteOn(1,69,.8);e.controller(1,64,127);e.noteOff(1,69);e.render(x.data(),y.data(),x.size());check(e.activeVoices()==1,"pedal holds note");nova::Sound probe;probe.sampleRate=sr;probe.left=x;probe.right=y;nova::analyse(probe);check(probe.tonal&&std::abs(1200*std::log2(probe.estimatedHz/440))<5,"expression preserves pitch");e.controller(1,64,0);e.render(x.data(),y.data(),x.size());check(e.activeVoices()==0,"pedal releases expressive note");e.noteOn(1,69,.8);e.noteOn(1,69,0);e.render(x.data(),y.data(),x.size());check(e.activeVoices()==0,"zero velocity releases note");e.noteOff(0,69);e.noteOff(99,69);}
+ std::cout<<"PASS: weighted level, gate, 4 rates, expressive pitch/pedal, zero velocity, channel bounds\n";
+}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}

@@ -16,7 +16,7 @@ jobs:
       - name: Compile selected core tests
         run: |
           mkdir -p build-ci
-          for test in ProductionTests SequenceTests PreviewTests RecreationWorkflowTests; do
+          for test in ProductionTests SequenceTests PreviewTests RecreationWorkflowTests QualityTests; do
             g++ -std=c++17 -O2 -I Source "Tests/${test}.cpp" -o "build-ci/${test}"
           done
       - name: Run selected core tests
@@ -25,3 +25,4 @@ jobs:
           ./build-ci/SequenceTests
           ./build-ci/PreviewTests
           ./build-ci/RecreationWorkflowTests
+          ./build-ci/QualityTests

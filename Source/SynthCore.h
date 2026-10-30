@@ -42,7 +42,7 @@ struct Voice {
     int note=60,channel=1,stage=0;
     uint64_t age=0;
     double samplePosition=0;
-    float amplitude=0,velocity=1,releaseStep=0,attackScale=1,randomValue=0;
+    float amplitude=0,velocity=1,releaseStep=0,attackScale=1,releaseScale=1,randomValue=0;
     std::array<double,3> phaseA{},phaseB{},phaseSub{};
     double integrator1=0,integrator2=0,g=.1,k=1;
     double modelTime=0;int modelFrame=0,trajectoryClock=0;
@@ -75,7 +75,7 @@ class Engine {
         for(int j=0;j<model->count;++j){double frequency=model->partials[j].frequency*ratio;double angle=2*pi*std::min(frequency,sampleRate*.49)/sampleRate;v.stepSin[j]=std::sin(angle);v.stepCos[j]=std::cos(angle);if(resetPhase){v.partialSin[j]=std::sin(model->partials[j].phase);v.partialCos[j]=std::cos(model->partials[j].phase);}}
     }
     float random() { randomState^=randomState<<13; randomState^=randomState>>17; randomState^=randomState<<5; return static_cast<float>(randomState/2147483648.0-1); }
-    void releaseVoice(Voice& v) { v.held=false; v.deferred=false; v.stage=3; v.releaseStep=v.amplitude/std::max(1.f,p.release*static_cast<float>(sampleRate)); }
+    void releaseVoice(Voice& v) { v.held=false; v.deferred=false; v.stage=3; v.releaseStep=v.amplitude/std::max(1.f,p.release*v.releaseScale*static_cast<float>(sampleRate)); }
     float envelope(Voice& v) {
         switch(v.stage) {
         case 0: v.amplitude+=1/std::max(1.f,p.attack*v.attackScale*static_cast<float>(sampleRate)); if(v.amplitude>=1) {v.amplitude=1;v.stage=1;} break;
@@ -103,13 +103,17 @@ public:
     int lastZone(int voice=0)const{return voices[std::clamp(voice,0,15)].zone;}
     int activeVoices() const { int n=0;for(const auto& v:voices) if(v.active) ++n;return n; }
     void noteOn(int channel,int note,float velocity) {
+        if(!std::isfinite(velocity)||velocity<=0){noteOff(std::clamp(channel,1,16),std::clamp(note,0,127));return;}
         Voice* chosen=nullptr;
         for(auto& v:voices) if(!v.active) { chosen=&v;break; }
         if(!chosen) { chosen=&voices[0]; for(auto& v:voices) if(v.age<chosen->age) chosen=&v; }
         *chosen=Voice{}; auto& v=*chosen;v.active=v.held=true;v.channel=std::clamp(channel,1,16);
         v.note=std::clamp(note,0,127);v.velocity=std::clamp(velocity,0.f,1.f);v.age=++counter;v.attackScale=1+std::clamp(p.touch,0.f,1.f)*(1-v.velocity)*3;v.randomValue=static_cast<float>(((v.age*2654435761u+note*97u)%65536)/32767.5-1);
+        // Touch changes articulation, never the oscillator frequency or note mapping.
+        const float touch=std::clamp(p.touch,0.f,1.f);v.releaseScale=1+touch*(v.velocity-.5f)*.4f;
         // Small deterministic phase offsets give unison its stereo width.
         v.phaseA={0,.19,.63};v.phaseB={.25,.49,.81};v.phaseSub={0,.19,.63};
+        if(touch>0){double phase=touch*(v.randomValue+1)*.12;for(auto* phases:{&v.phaseA,&v.phaseB})for(auto& x:*phases)x=std::fmod(x+phase,1.);}
         v.sourceModel=model;if(p.useZones&&zones&&p.engine==1){v.zone=zones->select(v.note,v.velocity);if(v.zone>=0)v.sourceModel=&zones->zones[v.zone].model;}
         retune(v,true);
         if((p.engine==3||p.engine==4)&&!delayMemory.empty()){
@@ -118,6 +122,7 @@ public:
         }
     }
     void noteOff(int channel,int note) {
+        channel=std::clamp(channel,1,16);note=std::clamp(note,0,127);
         for(auto& v:voices) if(v.active && v.channel==channel && v.note==note && v.held) {
             v.held=false; if(pedal[channel-1]) v.deferred=true;else releaseVoice(v);
         }
