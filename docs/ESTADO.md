@@ -1,7 +1,9 @@
-# Estado de trabajo 0.20
+# Estado publicado 0.20
 
 Interfaz reorganizada por tareas. Leer ACTUALIZACION_0.20.md. Conserva las funciones,
-812 programas y DSP de 0.19. Revisar CI y capturas del commit antes de publicar.
+812 programas y DSP de 0.19. Verificado: Actions 40984769831 / commit 2e3c83d3adb74fdff369a62944c910928ac9f4dd.
+Windows/MSVC y empaquetado SUCCESS; 9 pruebas DSP, contrato AudioProcessor y recorrido
+real de componentes SUCCESS. Capturas de Tocar/Explorar/Recrear y edicion revisadas.
 FL Studio/Windows interactivo sigue pendiente.
 
 ## Registro anterior
