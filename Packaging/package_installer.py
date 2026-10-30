@@ -33,7 +33,7 @@ with zipfile.ZipFile(sources,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
     paths+=list(root.glob('*.md'))+list(root.glob('*.txt'))+[root/'CMakeLists.txt',root/'.gitignore',root/'.gitattributes']
     for path in sorted(set(paths)):
         relative=path.relative_to(root)
-        if any(part in {'__pycache__','.git'} for part in relative.parts): continue
+        if any(part in {'__pycache__','.git'} for part in relative.parts) or relative==Path('LICENCIAS_TERCEROS.txt'): continue
         if path.is_file(): z.write(path,Path('NovaSynth')/relative)
     for path in sorted(a.juce.rglob('*')):
         relative=path.relative_to(a.juce)
