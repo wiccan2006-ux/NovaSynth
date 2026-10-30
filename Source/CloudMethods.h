@@ -1,12 +1,12 @@
 // Included in NovaProcessor. Credentials remain in this instance, never in presets.
 public:
- std::atomic<bool> remoteEnabled{false};
+ std::atomic<bool> remoteEnabled{false},remoteWorking{false};
  void configureRemote(juce::String endpoint,juce::String token){const juce::ScopedLock lock(metadataLock);remoteEndpoint=endpoint.trim().trimCharactersAtEnd("/");remoteToken=token;}
  juce::String remoteAddress()const{const juce::ScopedLock lock(metadataLock);return remoteEndpoint;}
  bool startRemoteFit(const std::shared_ptr<const ReferenceFile>& file,nova::SelectionRange range){
   juce::String address,token;{const juce::ScopedLock lock(metadataLock);address=remoteEndpoint;token=remoteToken;}
   if(!nova::cloudEndpointAllowed(address)||token.containsAnyOf("\r\n")){say("Configura una direccion HTTPS valida y una clave sin saltos de linea. No se envio audio.");return false;}
-  beginAssistantFit(false);automaticSearchJob=true;say("Servidor: enviando solo el fragmento seleccionado. Cancelar conserva el instrumento.");
+  beginAssistantFit(false);automaticSearchJob=true;remoteWorking.store(true);say("Servidor: enviando solo el fragmento seleccionado. Cancelar conserva el instrumento.");
   worker=std::thread([this,file,range,address,token]{try{
    auto source=readSelectedReference(formats,*file,range,false,60);if(cancel.load())throw std::runtime_error("Cancelado.");
    // PCM is a transport/analysis target only. It is never returned as an oscillator.
@@ -19,7 +19,7 @@ public:
    auto stream=juce::URL(address+"/v1/recreate").withPOSTData(bytes).createInputStream(juce::URL::InputStreamOptions(juce::URL::ParameterHandling::inPostData).withConnectionTimeoutMs(10000).withNumRedirectsToFollow(0).withExtraHeaders(headers).withStatusCode(&http));
    if(!stream||http!=200)throw std::runtime_error("No se pudo conectar o el servidor rechazo la solicitud (HTTP "+std::to_string(http)+"). Se conserva el instrumento.");
    fitProgress.store(.1f);juce::MemoryOutputStream replyLine;int total=0;bool completed=false;auto deadline=juce::Time::getMillisecondCounterHiRes()+190000;
-   while(!cancel.load()&&!stream->isExhausted()&&juce::Time::getMillisecondCounterHiRes()<deadline){char ch=0;if(stream->read(&ch,1)!=1)break;if(++total>nova::cloudMaxReply)throw std::runtime_error("Respuesta demasiado grande.");if(ch!='\n'){replyLine.writeByte(ch);continue;}if(replyLine.getDataSize()==0)continue;auto reply=juce::JSON::parse(juce::String::fromUTF8(static_cast<const char*>(replyLine.getData()),static_cast<int>(replyLine.getDataSize())));replyLine.reset();auto status=reply["status"].toString();if(status=="running"){fitProgress.store(std::min(.9f,fitProgress.load()+.004f));continue;}if(status!="done")throw std::runtime_error(reply["error"].toString().substring(0,240).toStdString());
+   while(!cancel.load()&&!stream->isExhausted()&&juce::Time::getMillisecondCounterHiRes()<deadline){char ch=0;if(stream->read(&ch,1)!=1)break;if(++total>nova::cloudMaxReply)throw std::runtime_error("Respuesta demasiado grande.");if(ch!='\n'){replyLine.writeByte(ch);continue;}if(replyLine.getDataSize()==0)continue;auto reply=juce::JSON::parse(juce::String::fromUTF8(static_cast<const char*>(replyLine.getData()),static_cast<int>(replyLine.getDataSize())));replyLine.reset();auto status=reply["status"].toString();if(status=="running"){continue;}if(status!="done")throw std::runtime_error(reply["error"].toString().substring(0,240).toStdString());
     auto snapshots=nova::readCloudSnapshots(reply);auto search=std::make_unique<nova::RecreationSearch>();
     for(auto& snapshot:snapshots){juce::ValueTree tree("NovaSynth");std::set<juce::String> ids;for(auto c:snapshot.parameters){auto id=c.getProperty("id").toString();auto* parameter=state.getParameter(id);double value=static_cast<double>(c.getProperty("value"));if(!parameter)throw std::runtime_error("Parametro remoto desconocido.");auto bounds=parameter->getNormalisableRange();if(value<bounds.start||value>bounds.end)throw std::runtime_error("Parametro remoto fuera de rango.");ids.insert(id);juce::ValueTree child("PARAM");child.setProperty("id",id,nullptr);child.setProperty("value",value,nullptr);tree.addChild(child,-1,nullptr);}
      if(ids.size()!=static_cast<size_t>(getParameters().size()))throw std::runtime_error("Propuesta remota incompleta.");

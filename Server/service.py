@@ -36,7 +36,7 @@ class Handler(BaseHTTPRequestHandler):
                 process=subprocess.Popen([self.server.worker,str(src),str(out),str(self.server.budget)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
                 deadline=time.monotonic()+self.server.timeout
                 while process.poll() is None:
-                    self.wfile.write(b'{"status":"running"}\n');self.wfile.flush()
+                    self.wfile.write(b'{"status":"running","keepalive":"'+b' '*200+b'"}\n');self.wfile.flush()
                     if time.monotonic()>deadline:raise TimeoutError('Compute time limit exceeded')
                     time.sleep(1)
                 if process.returncode or not out.exists():raise RuntimeError('Could not recreate a verified tonal instrument; use an isolated note')
