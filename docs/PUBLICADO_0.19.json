@@ -1,0 +1,41 @@
+{
+  "version": "0.19.0-beta",
+  "build_commit": "1722d335cafe0500ff4b1057b325a62e8e9f194c",
+  "workflow_run": 40981799622,
+  "windows_job": 123823364665,
+  "native_job": 123823364959,
+  "dsp_tests_passed": 9,
+  "host_contract_test_passed": true,
+  "gui_component_tests_passed": true,
+  "offline_block_delta": 0,
+  "static_installer_verification": "PASS",
+  "fl_studio_validated": false,
+  "interactive_windows_installation_validated": false,
+  "human_listening_completed": false,
+  "files": {
+    "NovaSynth_0.19_Instalar_Windows_x64.exe": {
+      "bytes": 31585792,
+      "sha256": "55537c05660bf30ddcc11b3b32166a9accae981bde7bf654a3ebea37a6ccb31d"
+    },
+    "SHA256SUMS.txt": {
+      "bytes": 413,
+      "sha256": "41896019f1138a28c0c3b88ffc13c88f5c9fdc1f05b8fb08139e365925ebb053"
+    },
+    ".NovaSynth_0.19_Codigo_Fuente_Completo.zip.AToPZa": {
+      "bytes": 8912896,
+      "sha256": "ca5a435c3b856720eb5049cd4cb9d3365f9cc1b770ccab3e0dc5075c4d4b1889"
+    },
+    "NovaSynth_0.19_Codigo_Fuente_Completo.zip": {
+      "bytes": 23903396,
+      "sha256": "42f858011e370ea35c1c638c230c701853df46e7116efecc97d54e0adff0045d"
+    },
+    "NovaSynth_0.19_Instalador.zip": {
+      "bytes": 26536392,
+      "sha256": "7834c89f58b82ef5f6e6823950fd676ad3a9efecf7f782a399711b3caeac0b12"
+    },
+    "NovaSynth_0.19_VST3_Portable.zip": {
+      "bytes": 3292957,
+      "sha256": "bb32a322e7a503d91830348350668c940762001948aeb35990ace54993638fef"
+    }
+  }
+}

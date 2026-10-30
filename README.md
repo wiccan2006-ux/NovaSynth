@@ -1,7 +1,7 @@
 # Nova Synth
 
 Instrumento VST3 para Windows x64 orientado a FL Studio.
-Desarrollador: **Eleander Sanchez (Bodby Olwen)**. Version de trabajo: **0.19 beta**.
+Desarrollador: **Eleander Sanchez (Bodby Olwen)**. Version publicada: **0.19 beta**.
 Codigo bajo GPL-3.0-or-later; conserva `LICENSE.txt` y los avisos incluidos.
 
 Este repositorio contiene las fuentes propias, pruebas, datos/modelos sinteticos,
@@ -46,7 +46,7 @@ comparando motores y notas. Lee [la guia](LEEME.md) y [el alcance real](docs/ACT
 Repositorio privado: https://github.com/wiccan2006-ux/NovaSynth
 
 Descarga el instalador, las fuentes publicadas y el paquete completo desde
-**Releases > v0.18.0-beta**. El paquete completo conserva tambien la distribucion
+**Releases > v0.19.0-beta**. El paquete completo conserva tambien la distribucion
 y el historial inicial; los binarios no se guardan dentro de Source.
 `NovaSynth.bundle` permite recuperar de forma independiente la instantanea inicial.
 
